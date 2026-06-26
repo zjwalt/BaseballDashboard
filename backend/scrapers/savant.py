@@ -43,6 +43,20 @@ class SavantScraper:
         _cache.set(cache_key, df.to_dict(orient="records"))
         return df
 
+    def get_batter_vs_pitch(self, season, min_pa: int = 1) -> pd.DataFrame:
+        """
+        Returns hitting metrics vs specific pitch types
+        """
+
+        cache_key = f"savant_batting_pitch_{season}_{min_pa}"
+        cached = _cache.get(cache_key)
+        if cached is not None:
+            return pd.DataFrame(cached)
+
+        df = pybaseball.statcast_batter_pitch_arsenal(season, minPA=min_pa)
+        _cache.set(cache_key, df.to_dict(orient="records"))
+        return df
+
     def get_pitcher_statcast(
         self, mlbam_id: int, start_dt: str, end_dt: str
     ) -> pd.DataFrame:

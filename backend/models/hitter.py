@@ -18,16 +18,16 @@ class HitterTraditionalStats(BaseModel):
     sb: int
 
 
-class HitterAdvancedStats(BaseModel):
-    wOBA: float
-    xBA: float
-    xSLG: float
-    xwOBA: float
-    babip: float
-    bbPct: float
-    kPct: float
-    wRCPlus: float
-    opsPlus: int
+# class HitterAdvancedStats(BaseModel):
+#     wOBA: float
+#     xBA: float
+#     xSLG: float
+#     xwOBA: float
+#     babip: float
+#     bbPct: float
+#     kPct: float
+#     wRCPlus: float
+#     opsPlus: int
 
 
 class HitterStatcastAdvanced(BaseModel):
@@ -35,14 +35,13 @@ class HitterStatcastAdvanced(BaseModel):
     launchAngle: float
     hardHitPct: float
     barrelPct: float
-    xwOBACon: float  # Expected wOBA on contact
     sweetSpotPct: float  # luach angle 8-32 deg
 
 
-class HitterValue(BaseModel):
-    bWAR: float
-    offense: float
-    defense: float
+# class HitterValue(BaseModel):
+#     bWAR: float
+#     offense: float
+#     defense: float
 
 
 class HitterPercentiles(BaseModel):
@@ -53,7 +52,7 @@ class HitterPercentiles(BaseModel):
     kPct: int
     bbPct: int
     whiffPct: int
-    chasPct: int
+    chasePct: int
     exitVelo: int
     hardHitPct: int
     batSpeed: int
@@ -61,12 +60,15 @@ class HitterPercentiles(BaseModel):
 
 class Hitter(BaseModel):
     id: int
+    player_id: int
     name: str
     team: str
-    number: str
+    number: int
     position: str
+    throw: str
+    bat: str
     traditional: HitterTraditionalStats
-    advanced: HitterAdvancedStats
+    # advanced: HitterAdvancedStats
     statcastAdv: HitterStatcastAdvanced
-    value: HitterValue
+    # value: HitterValue
     percentiles: HitterPercentiles
