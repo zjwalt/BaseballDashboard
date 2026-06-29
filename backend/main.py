@@ -6,7 +6,7 @@ app = FastAPI(title="Baseball Dashboard")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://localhost:5173"],
+    allow_origins=["http://localhost:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

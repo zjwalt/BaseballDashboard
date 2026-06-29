@@ -8,4 +8,4 @@ function PitchersPage() {
   );
 }
 
-export default PitchersPage();
+export default PitchersPage;

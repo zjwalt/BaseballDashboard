@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { HittersPage, PitchersPage } from "./pages";
 import { MainLayout } from "./components";
-import { Box } from "@mui/materials";
+import { Box } from "@mui/material";
 
 function App() {
   return (

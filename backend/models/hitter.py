@@ -4,15 +4,15 @@ from pydantic import BaseModel
 class HitterTraditionalStats(BaseModel):
     pa: int
     ab: int
-    hits: int
     avg: float
-    hr: int
-    rbi: int
     obp: float
     slg: float
     ops: float
+    hits: int
     doubles: int
     triples: int
+    hr: int
+    rbi: int
     k: int
     bb: int
     sb: int

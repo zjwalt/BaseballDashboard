@@ -64,6 +64,15 @@ function MainLayout() {
           sx={{ minHeight: 6 }}
         />
       </Tabs>
+
+      <Box
+        sx={{
+          height: `calc(100vh - 48px)`,
+          width: "100%",
+        }}
+      >
+        <Outlet />
+      </Box>
     </Box>
   );
 }
