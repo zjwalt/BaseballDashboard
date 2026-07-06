@@ -19,8 +19,8 @@ function HitterCard({ hitter }: HitterCardProps) {
 
   const statLabels: Record<string, string> = {
     hits: "H",
-    doubles: "2B",
-    triples: "3B",
+    DOUBLES: "2B",
+    TRIPLES: "3B",
     kPct: "K%",
     bbPct: "BB%",
     exitVelo: "ev",
@@ -73,10 +73,33 @@ function HitterCard({ hitter }: HitterCardProps) {
             spacing={0.5}
             sx={{ display: "flex", width: "auto", alignItems: "center" }}
           >
-            <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+            <Typography variant="body2" sx={{}}>
               {statLabels[key] ?? key}
             </Typography>
             <Typography variant="body2">{value}</Typography>
+          </Stack>
+        ))}
+      </Stack>
+
+      {/* Player Advanced Stats */}
+      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+        {Object.entries(hitter.advanced).map(([key, value]) => (
+          <Stack
+            direction="column"
+            spacing={0.5}
+            sx={{ width: "auto", alignItems: "center" }}
+          >
+            <Typography variant="body2">{statLabels[key] ?? key}</Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                color: percentiles[key as keyof HitterPercentiles]
+                  ? handleColor(percentiles[key as keyof HitterPercentiles])
+                  : "",
+              }}
+            >
+              {value}
+            </Typography>
           </Stack>
         ))}
       </Stack>
@@ -89,7 +112,7 @@ function HitterCard({ hitter }: HitterCardProps) {
             spacing={0.5}
             sx={{ width: "auto", alignItems: "center" }}
           >
-            <Typography variant="body2" sx={{ textTransform: "uppercase" }}>
+            <Typography variant="body2" sx={{}}>
               {statLabels[key] ?? key}
             </Typography>
             <Typography
@@ -114,10 +137,7 @@ function HitterCard({ hitter }: HitterCardProps) {
             spacing={0.5}
             sx={{ display: "flex", width: "auto", alignItems: "center" }}
           >
-            <Typography
-              variant="body2"
-              sx={{ textTransform: "uppercase", whiteSpace: "nowrap" }}
-            >
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
               {statLabels[key] ?? key}
             </Typography>
             <Typography variant="body2">{value}</Typography>

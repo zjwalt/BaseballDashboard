@@ -19,6 +19,17 @@ class BaseballRefScraper:
             return pd.DataFrame(cached)
 
         df = pybaseball.batting_stats_bref(year)
+
+        ## Calculate some key stats like BABIP, K%, and BB%
+        df["k%"] = df["SO"] / df["PA"]
+        df["bb%"] = df["BB"] / df["PA"]
+        df["BABIP"] = (df["H"] - df["HR"]) / (df["AB"] - df["SO"] - df["HR"] + df["SF"])
+
+        lg_obp = round((df["OBP"] * df["PA"]).sum() / df["PA"].sum(), 3)
+        lg_slg = round((df["SLG"] * df["PA"]).sum() / df["PA"].sum(), 3)
+
+        df["_ops"] = ((df["OBP"] / lg_obp) + (df["SLG"] / lg_slg) - 1) * 100
+
         _cache.set(cache_key, df.to_dict(orient="records"))
         return df
 

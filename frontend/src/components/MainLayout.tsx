@@ -1,21 +1,29 @@
-import { useState, type SetStateAction } from "react";
+import { useEffect, useState, type SetStateAction } from "react";
+import { useDashboard } from "../context/DashboardContext";
 import { Link, Outlet } from "react-router-dom";
 import { Box, Tab, Tabs } from "@mui/material";
+import HeaderBar from "./HeaderBar";
+
+import { fetchPlayersList } from "../services/api";
+import type { Player } from "../types/player";
 
 function MainLayout() {
+  const { players, setPlayers } = useDashboard();
+
+  useEffect(() => {
+    fetchPlayersList()
+      .then((players: Player[]) => {
+        setPlayers(players);
+      })
+      .catch((err: Error) => console.error(err.message));
+  }, []);
+
   const getActiveTab = () => {
     if (location.pathname.startsWith("/pitchers")) return 1;
     return 0;
   };
 
   const [tab, setTab] = useState(getActiveTab());
-
-  const handleTabChange = (
-    event: React.SyntheticEvent,
-    newTab: SetStateAction<number>,
-  ) => {
-    setTab(newTab);
-  };
 
   return (
     <Box
@@ -27,43 +35,7 @@ function MainLayout() {
         width: "100vw",
       }}
     >
-      <Tabs
-        value={tab}
-        onChange={handleTabChange}
-        sx={{
-          backgroundColor: "background.paper",
-          borderRadius: 1,
-          padding: 0.5,
-          height: 6,
-          width: "fit-content",
-          "& .MuiTab-root": {
-            minHeight: 36,
-            borderRadius: 1,
-            textTransform: "none",
-            fontWeight: 600,
-            fontSize: 13,
-            color: "text.disabled",
-            transition: "all 0.15s",
-          },
-          "& .Mui-selected": {
-            backgroundColor: "background.default",
-            color: "primary.main",
-          },
-        }}
-      >
-        <Tab
-          label="Hitters"
-          component={Link}
-          to="/hitters"
-          sx={{ minHeight: 6 }}
-        />
-        <Tab
-          label="Pitchers"
-          component={Link}
-          to="/pitchers"
-          sx={{ minHeight: 6 }}
-        />
-      </Tabs>
+      <HeaderBar />
 
       <Box
         sx={{

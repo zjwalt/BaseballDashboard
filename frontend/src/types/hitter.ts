@@ -15,6 +15,18 @@ export interface HitterTraditionalStats {
   sb: number;
 }
 
+export interface HitterAdvancedStats {
+  wOBA: number;
+  xBA: number;
+  xSlg: number;
+  xwOBA: number;
+  babip: number;
+  bbPct: number;
+  kPct: number;
+  wRCPlus: number;
+  opsPlus: number;
+}
+
 export interface HitterStatcastAdvanced {
   exitVelo: number;
   launchAngle: number;
@@ -47,6 +59,7 @@ export interface Hitter {
   throw: string;
   bat: string;
   traditional: HitterTraditionalStats;
+  advanced: HitterAdvancedStats;
   statcastAdv: HitterStatcastAdvanced;
   percentiles: HitterPercentiles;
 }

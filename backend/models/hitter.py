@@ -2,32 +2,32 @@ from pydantic import BaseModel
 
 
 class HitterTraditionalStats(BaseModel):
-    pa: int
-    ab: int
-    avg: float
-    obp: float
-    slg: float
-    ops: float
-    hits: int
-    doubles: int
-    triples: int
-    hr: int
-    rbi: int
-    k: int
-    bb: int
-    sb: int
+    PA: int
+    AB: int
+    AVG: float
+    OBP: float
+    SLG: float
+    OPS: float
+    HITS: int
+    DOUBLES: int
+    TRIPLES: int
+    HR: int
+    RBI: int
+    K: int
+    BB: int
+    SB: int
 
 
-# class HitterAdvancedStats(BaseModel):
-#     wOBA: float
-#     xBA: float
-#     xSLG: float
-#     xwOBA: float
-#     babip: float
-#     bbPct: float
-#     kPct: float
-#     wRCPlus: float
-#     opsPlus: int
+class HitterAdvancedStats(BaseModel):
+    wOBA: float
+    xBA: float
+    xSLG: float
+    xwOBA: float
+    babip: float
+    bbPct: float
+    kPct: float
+    wRCPlus: int
+    opsPlus: int
 
 
 class HitterStatcastAdvanced(BaseModel):
@@ -68,7 +68,7 @@ class Hitter(BaseModel):
     throw: str
     bat: str
     traditional: HitterTraditionalStats
-    # advanced: HitterAdvancedStats
+    advanced: HitterAdvancedStats
     statcastAdv: HitterStatcastAdvanced
     # value: HitterValue
     percentiles: HitterPercentiles
