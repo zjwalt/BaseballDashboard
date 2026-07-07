@@ -19,10 +19,36 @@ class PlayerService:
     def __init__(self):
         self.scraper = PlayerDetailScraper()
 
-    def get_player_details(self) -> list[Player]:
-        player_details = self.scraper.get_combined_player_list(SEASON).to_dict(
-            orient="records"
-        )
+    def get_new_player_details(self) -> list[Player]:
+        conn = None
+        cursor = None
+        mlb_ids = None
+        try:
+            conn = get_db_conn()
+            cursor = conn.cursor()
+            cursor.execute("SELECT DISTINCT mlbid FROM players")
+            mlb_ids = [row[0] for row in cursor.fetchall()]
+        except Exception as ex:
+            print(ex)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+        if not mlb_ids:
+            return []
+
+        print()
+
+        player_details = [
+            p
+            for p in self.scraper.get_combined_player_list(SEASON).to_dict(
+                orient="records"
+            )
+            if p["player_id"] not in mlb_ids
+        ]
+
         players = []
         for p in player_details:
             try:
@@ -43,6 +69,42 @@ class PlayerService:
                 )
 
         return players
+
+    def get_current_player_details(self) -> list[Player]:
+        conn = None
+        cursor = None
+        players = None
+        try:
+            conn = get_db_conn()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            cursor.execute("SELECT * FROM players")
+            players = cursor.fetchall()
+        except Exception as ex:
+            print(ex)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+        if not players:
+            return []
+
+        current_players = []
+        for p in players:
+            player = self._build_player(
+                mlb_id=p["mlbid"],
+                name=p["playername"],
+                team=p["playerteam"],
+                number=p["playernumber"],
+                position=p["playerposition"],
+                throw=p["playerthrow"],
+                bat=p["playerbat"],
+                type=p["playertype"],
+            )
+            current_players.append(player)
+
+        return current_players
 
     def _build_player(
         self,
@@ -65,4 +127,3 @@ class PlayerService:
             bat=bat,
             type=type,
         )
-

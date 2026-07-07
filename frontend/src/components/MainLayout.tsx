@@ -4,16 +4,23 @@ import { Link, Outlet } from "react-router-dom";
 import { Box, Tab, Tabs } from "@mui/material";
 import HeaderBar from "./HeaderBar";
 
-import { fetchPlayersList } from "../services/api";
+import { fetchNewPlayersList, fetchCurrentPlayersList } from "../services/api";
 import type { Player } from "../types/player";
 
 function MainLayout() {
-  const { players, setPlayers } = useDashboard();
+  const { currentPlayers, newPlayers, setCurrentPlayers, setNewPlayers } =
+    useDashboard();
 
   useEffect(() => {
-    fetchPlayersList()
+    fetchCurrentPlayersList()
+      .then((currentPlayers: Player[]) => {
+        setCurrentPlayers(currentPlayers);
+      })
+      .catch((err: Error) => console.error(err.message));
+
+    fetchNewPlayersList()
       .then((players: Player[]) => {
-        setPlayers(players);
+        setNewPlayers(players);
       })
       .catch((err: Error) => console.error(err.message));
   }, []);

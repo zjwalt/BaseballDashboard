@@ -8,6 +8,13 @@ scraper = PlayerDetailScraper()
 service = PlayerService()
 
 
-@router.get("/list", response_model=list[Player])
+@router.get("/list_new", response_model=list[Player])
 async def get_player_list(season: int = 2026):
-    return service.get_player_details()
+    players = service.get_new_player_details()
+    return players
+
+
+@router.get("/list_current", response_model=list[Player])
+async def get_current_player_list():
+    players = service.get_current_player_details()
+    return players

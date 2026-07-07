@@ -92,7 +92,9 @@ class PlayerDetailScraper:
                     "team": TEAM_ID_MAP.get(p["currentTeam"]["id"], "UNK"),
                     "bats": p.get("batSide", {}).get("code"),
                     "throws": p["pitchHand"]["code"],
-                    "number": p.get("primaryNumber"),
+                    "number": int(p["primaryNumber"])
+                    if p.get("primaryNumber")
+                    else None,
                 }
                 for p in people
             ]

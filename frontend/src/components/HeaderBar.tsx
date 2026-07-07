@@ -2,8 +2,9 @@ import { useState, type SetStateAction } from "react";
 import { useDashboard } from "../context/DashboardContext";
 import { Link } from "react-router-dom";
 import { Autocomplete, Box, Button, Stack, Tab, Tabs } from "@mui/material";
+import SearchPlayers from "./TopBar/SearchPlayers";
 
-import AddPlayers from "./AddPlayers";
+import AddPlayers from "./TopBar/AddPlayers";
 
 function HeaderBar() {
   const { hitters, tab, setTab } = useDashboard();
@@ -60,9 +61,10 @@ function HeaderBar() {
         </Tabs>
       </Box>
 
-      <Box>
+      <Stack direction="row" spacing={2}>
+        <SearchPlayers />
         <AddPlayers />
-      </Box>
+      </Stack>
     </Stack>
   );
 }

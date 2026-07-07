@@ -5,7 +5,7 @@ class Player(BaseModel):
     player_id: int
     name: str
     team: str
-    number: int
+    number: int | None = None
     position: str
     throw: str
     bat: str

@@ -45,8 +45,7 @@ class HitterService:
                 row["abbrev"]: row["park_factor"] for row in cursor.fetchall()
             }
         except Exception as ex:
-            # print(ex)
-            print()
+            print(ex)
         finally:
             if cursor:
                 cursor.close()

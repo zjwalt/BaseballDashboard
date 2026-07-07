@@ -5,8 +5,10 @@ import type { Hitter } from "../types/hitter";
 import type { Player } from "../types/player";
 
 interface DashboardContextProps {
-  players: Player[];
-  setPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+  currentPlayers: Player[];
+  setCurrentPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
+  newPlayers: Player[];
+  setNewPlayers: React.Dispatch<React.SetStateAction<Player[]>>;
   hitters: Hitter[];
   setHitters: React.Dispatch<React.SetStateAction<Hitter[]>>;
   tab: number;
@@ -17,7 +19,8 @@ const DashboardContext = createContext<DashboardContextProps | null>(null);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
   const [hitters, setHitters] = useState<Hitter[]>([]);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [newPlayers, setNewPlayers] = useState<Player[]>([]);
+  const [currentPlayers, setCurrentPlayers] = useState<Player[]>([]);
 
   const getActiveTab = () => {
     if (location.pathname.startsWith("/pitchers")) return 1;
@@ -27,8 +30,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [tab, setTab] = useState(getActiveTab());
 
   const value = {
-    players,
-    setPlayers,
+    currentPlayers,
+    setCurrentPlayers,
+    newPlayers,
+    setNewPlayers,
     hitters,
     setHitters,
     tab,
