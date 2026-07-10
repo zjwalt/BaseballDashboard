@@ -3,6 +3,7 @@ import { useDashboard } from "../../context/DashboardContext";
 import {
   Autocomplete,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -64,8 +65,8 @@ function AddPlayers() {
             </IconButton>
           </Stack>
         </DialogTitle>
-        <DialogContent>
-          <Autocomplete
+        <DialogContent sx={{}}>
+          <Autocomplete<Player, true>
             options={newPlayers}
             multiple
             groupBy={(option: Player) => option.type}
@@ -86,7 +87,13 @@ function AddPlayers() {
             onChange={(_: React.SyntheticEvent, value: Player[]) => {
               setAdditionalPlayers(value);
             }}
-            sx={{ width: 320 }}
+            sx={{
+              pt: 1,
+              width: 320,
+              "& .MuiChip-label": {
+                mt: 0.5,
+              },
+            }}
           />
         </DialogContent>
         <DialogActions>
