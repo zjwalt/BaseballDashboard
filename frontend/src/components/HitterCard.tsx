@@ -28,6 +28,8 @@ function HitterCard({ hitter }: HitterCardProps) {
     whiffPct: "Whiff %",
     chasePct: "Chase %",
     hardHitPct: "Hard-Hit %",
+    wRCPlus: "wRC+",
+    opsPlus: "OPS+",
   };
 
   return (

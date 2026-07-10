@@ -19,6 +19,37 @@ class PlayerService:
     def __init__(self):
         self.scraper = PlayerDetailScraper()
 
+    def add_players(self, player: Player):
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_conn()
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                INSERT INTO players (mlbid, playername, playernumber, playerposition, playerthrow, playerbat, playerteam, playertype)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+                (
+                    player.player_id,
+                    player.name,
+                    player.number,
+                    player.position,
+                    player.throw,
+                    player.bat,
+                    player.team,
+                    player.type,
+                ),
+            )
+            conn.commit()
+        except Exception as ex:
+            print(ex)
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
     def get_new_player_details(self) -> list[Player]:
         conn = None
         cursor = None

@@ -32,3 +32,15 @@ export async function fetchCurrentPlayersList(): Promise<Player[]> {
     );
   return response.json();
 }
+
+export async function addPlayers(players: Player[]): Promise<void> {
+  const response = await fetch(`${BASE_URL}/players/add`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(players),
+  });
+  if (!response.ok)
+    throw new Error(`Failed to add players: ${response.status}`);
+}

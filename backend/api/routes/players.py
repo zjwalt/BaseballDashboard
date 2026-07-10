@@ -18,3 +18,9 @@ async def get_player_list(season: int = 2026):
 async def get_current_player_list():
     players = service.get_current_player_details()
     return players
+
+
+@router.post("/add")
+async def add_players(players: list[Player]):
+    for player in players:
+        service.add_players(player)

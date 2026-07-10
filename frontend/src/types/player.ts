@@ -3,8 +3,8 @@ export interface Player {
   name: string;
   position: string;
   team: string;
-  bats: string | null;
-  throws: string;
+  bat: string | null;
+  throw: string;
   number: number;
-  playertype: string;
+  type: string;
 }
