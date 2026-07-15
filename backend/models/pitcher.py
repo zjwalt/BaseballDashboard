@@ -2,22 +2,36 @@ from pydantic import BaseModel
 
 
 class PitcherTraditionalStats(BaseModel):
-    era: float
-    wins: int
-    strikeouts: int
-    whip: float
-    inningsPitched: float
-    bb9: float
+    IP: float
+    H: int
+    R: int
+    ER: int
+    HR: int
+    BB: int
+    K: int
+    W: int
+    L: int
+    SV: int
 
 
 class PitcherAdvancedStats(BaseModel):
-    fip: float
+    BA: float
+    OBP: float
+    SLG: float
+    OPS: float
+    BAbip: float
+    WHIP: float
+    FIP: float
     xFIP: float
-    # siera: float
-    kPct: float
-    bbPct: float
+    ERAPlus: int
+    H9: float
+    HR9: float
+    BB9: float
+    SO9: float
+    # HRPct: float
+    # KPct: float
+    # BBPct: float
     kBB: float
-    eraPlus: int
 
 
 class PitcherStatcastStats(BaseModel):
@@ -47,10 +61,14 @@ class PitcherPercentiles(BaseModel):
 
 class Pitcher(BaseModel):
     id: int
+    player_id: int
     name: str
     team: str
-    positions: str
+    number: int
+    position: str
+    throw: str
+    bat: str
     traditional: PitcherTraditionalStats
     advanced: PitcherAdvancedStats
-    statcast: PitcherStatcastStats
-    percentiles: PitcherPercentiles
+    # statcast: PitcherStatcastStats
+    # percentiles: PitcherPercentiles

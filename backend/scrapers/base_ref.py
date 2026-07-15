@@ -56,6 +56,27 @@ class BaseballRefScraper:
             return pd.DataFrame(cached)
 
         df = pybaseball.pitching_stats_bref(year)
+
+        df["H9"] = (df["H"] / df["IP"]) * 9
+        df["HR9"] = (df["HR"] / df["IP"]) * 9
+        df["BB9"] = (df["BB"] / df["IP"]) * 9
+
+        lgERA = round((df["ER"].sum() / df["IP"].sum()) * 9, 3)
+        lgHR = df["HR"].sum()
+        lgBB = df["BB"].sum()
+        lgHBP = df["HBP"].sum()
+        lgK = df["SO"].sum()
+        lgIP = df["IP"].sum()
+
+        df["FIPconstant"] = lgERA - (
+            ((13 * lgHR) + (3 * (lgBB + lgHBP)) - (2 * lgK)) / (lgIP)
+        )
+        df["FIP"] = (
+            ((13 * df["HR"]) + (3 * (df["BB"] + df["HBP"])) - (2 * df["SO"])) / df["IP"]
+        ) + df["FIPconstant"]
+
+        df["normERA"] = (lgERA / df["ERA"]) * 100
+
         _cache.set(cache_key, df.to_dict(orient="records"))
         return df
 

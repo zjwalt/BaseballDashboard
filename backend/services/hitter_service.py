@@ -245,11 +245,3 @@ class HitterService:
             return int(row[col].item())
         except (KeyError, TypeError, ValueError):
             return default
-
-
-conn = get_db_conn()
-cursor = conn.cursor()
-cursor.execute("SELECT * FROM players WHERE playertype='hitter'")
-rows = cursor.fetchall()
-cursor.close()
-conn.close()

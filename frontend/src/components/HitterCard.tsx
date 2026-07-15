@@ -23,13 +23,16 @@ function HitterCard({ hitter }: HitterCardProps) {
     TRIPLES: "3B",
     kPct: "K%",
     bbPct: "BB%",
-    exitVelo: "ev",
+    exitVelo: "EV",
+    launchAngle: "LA",
     barrelPct: "Barrel %",
     whiffPct: "Whiff %",
     chasePct: "Chase %",
     hardHitPct: "Hard-Hit %",
+    sweetSpotPct: "Sweet-Spot %",
     wRCPlus: "wRC+",
     opsPlus: "OPS+",
+    batSpeed: "Bat Speed",
   };
 
   return (

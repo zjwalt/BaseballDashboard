@@ -84,7 +84,7 @@ class SavantScraper:
         ev_df = pybaseball.statcast_pitcher_exitvelo_barrels(season, minBBE=min_pitches)
         exp_df = pybaseball.statcast_pitcher_expected_stats(season, minPA=min_pitches)
 
-        df = ev_df.merge(exp_df, on="plyaer_id", how="outer", suffixes=("", "_exp"))
+        df = ev_df.merge(exp_df, on="player_id", how="outer", suffixes=("", "_exp"))
         _cache.set(cache_key, df.to_dict(orient="records"))
         return df
 

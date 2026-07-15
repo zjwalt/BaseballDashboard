@@ -42,7 +42,7 @@ function HittersPage() {
           }}
         >
           <Typography variant="h5">Pittsburgh Pirates</Typography>
-          <PlayerContainer hitters={hitters} />
+          <PlayerContainer hitters={piratesHitters} />
         </Stack>
         <Stack
           direction="column"
