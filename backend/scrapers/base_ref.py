@@ -57,6 +57,10 @@ class BaseballRefScraper:
 
         df = pybaseball.pitching_stats_bref(year)
 
+        df["obp"] = (df["H"] + df["BB"] + df["HBP"]) / (
+            df["AB"] + df["BB"] + df["HBP"] + df["SF"]
+        )
+
         df["H9"] = (df["H"] / df["IP"]) * 9
         df["HR9"] = (df["HR"] / df["IP"]) * 9
         df["BB9"] = (df["BB"] / df["IP"]) * 9

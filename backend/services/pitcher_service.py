@@ -109,6 +109,7 @@ class PitcherService:
 
         pitching_rows = pitching_df[pitching_df["player_id"] == mlbam_id]
         pitch_df = pitching_rows.iloc[0] if not pitching_rows.empty else None
+        ops = round(float(pitch_df["obp"] + pitch_df["slg"]), 3)
 
         ERA_plus = round(pitch_df["normERA"] / park_factor)
 
@@ -125,6 +126,7 @@ class PitcherService:
             throw=player["playerthrow"],
             bat=player["playerbat"],
             traditional=PitcherTraditionalStats(
+                ERA=self._sf(pitch_df, "ERA"),
                 IP=self._sf(pitch_df, "IP"),
                 H=self._si(pitch_df, "H"),
                 R=self._si(pitch_df, "R"),
@@ -137,10 +139,10 @@ class PitcherService:
                 SV=self._si(pitch_df, "SV"),
             ),
             advanced=PitcherAdvancedStats(
-                BA=self._sf(pitch_df, "BA"),
-                OBP=self._sf(pitch_df, "OBP"),
-                SLG=self._sf(pitch_df, "SLG"),
-                OPS=self._sf(pitch_df, "OPS"),
+                BA=self._sf(pitch_df, "ba"),
+                OBP=self._sf(pitch_df, "obp"),
+                SLG=self._sf(pitch_df, "slg"),
+                OPS=ops,
                 BAbip=self._sf(pitch_df, "BAbip"),
                 WHIP=self._sf(pitch_df, "WHIP"),
                 FIP=self._sf(pitch_df, "FIP"),
@@ -158,7 +160,6 @@ class PitcherService:
     def _sf(row: pd.Series | None, col: str, default: float = 0.0) -> float:
         if row is None:
             return default
-
         try:
             return round(float(row[col].item()), 3)
         except (KeyError, TypeError, ValueError):

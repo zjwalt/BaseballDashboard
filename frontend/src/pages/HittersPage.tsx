@@ -1,13 +1,15 @@
 import { useDashboard } from "../context/DashboardContext";
 import { useEffect } from "react";
 import { fetchHitters } from "../services/api";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, IconButton, Stack, Tooltip, Typography } from "@mui/material";
 
 import type { Hitter } from "../types/hitter";
-import { PlayerContainer } from "../components";
+import { PlayerContainer, EditPlayerOrderDialog } from "../components";
+
+import EditIcon from '@mui/icons-material/Edit';
 
 function HittersPage() {
-  const { hitters, currentPlayers, setHitters } = useDashboard();
+  const { hitters, currentPlayers, openOrderDialog, setHitters, setOpenOrderDialog } = useDashboard();
 
   useEffect(() => {
     fetchHitters()
@@ -41,7 +43,14 @@ function HittersPage() {
             pr: 3,
           }}
         >
-          <Typography variant="h5">Pittsburgh Pirates</Typography>
+          <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography variant="h5">Pittsburgh Pirates</Typography>
+            <Tooltip title='Edit Player Order'>
+              <IconButton size='small' onClick={() => setOpenOrderDialog(true)}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
           <PlayerContainer hitters={piratesHitters} />
         </Stack>
         <Stack
@@ -55,6 +64,8 @@ function HittersPage() {
           <PlayerContainer hitters={otherHitters} />
         </Stack>
       </Stack>
+
+      <EditPlayerOrderDialog open={openOrderDialog} onClose={() => setOpenOrderDialog(false)} players={piratesHitters} type='hitter' />
     </Box>
   );
 }

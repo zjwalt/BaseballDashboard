@@ -2,6 +2,7 @@ from pydantic import BaseModel
 
 
 class PitcherTraditionalStats(BaseModel):
+    ERA: float
     IP: float
     H: int
     R: int

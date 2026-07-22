@@ -1,4 +1,5 @@
 import type { Hitter } from "../types/hitter";
+import type { Pitcher } from "../types/pitcher";
 import type { Player } from "../types/player";
 
 const BASE_URL = "http://localhost:8000/api/v1";
@@ -14,6 +15,20 @@ export async function fetchHitterById(id: number): Promise<Hitter[]> {
   const response = await fetch(`${BASE_URL}/hitters/${id}`);
   if (!response.ok)
     throw new Error(`Failed to fetch hitter ${id}: ${response.status}`);
+  return response.json();
+}
+
+export async function fetchPitchers(): Promise<Pitcher[]> {
+  const response = await fetch(`${BASE_URL}/pitchers/`);
+  if (!response.ok)
+    throw new Error(`Failed to fetch pitchers: ${response.status}`);
+  return response.json();
+}
+
+export async function fetchPitcherById(id: number): Promise<Pitcher[]> {
+  const response = await fetch(`${BASE_URL}/pitchers/${id}`);
+  if (!response.ok)
+    throw new Error(`Failed to fetch pitcher ${id}: ${response.status}`)
   return response.json();
 }
 

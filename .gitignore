@@ -25,4 +25,5 @@ dist-ssr
 
 
 pyrightconfig.json
-test.py
+*test*
+.env

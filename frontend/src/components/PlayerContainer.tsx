@@ -1,15 +1,16 @@
 import { Box, Paper, Stack } from "@mui/material";
 import type { Hitter } from "../types/hitter";
-// import type { Pitcher } from '../types/pitcher';
-//
+import type { Pitcher } from '../types/pitcher';
+
 import { HitterCard } from "./";
+import { PitcherCard } from "./index.ts";
 
 interface PlayerContainerProps {
   hitters?: Hitter[];
-  // pitchers?: Pitcher[];
+  pitchers?: Pitcher[];
 }
 
-function PlayerContainer({ hitters }: PlayerContainerProps) {
+function PlayerContainer({ hitters, pitchers }: PlayerContainerProps) {
   return (
     <Paper
       sx={{
@@ -28,7 +29,10 @@ function PlayerContainer({ hitters }: PlayerContainerProps) {
           <HitterCard hitter={hitter} />
         ))}
 
-        {/* <Box minWidth={2} flexshrink={0}></Box> */}
+        {pitchers?.map((pitcher: Pitcher) => (
+          <PitcherCard pitcher={pitcher} />
+        ))}
+
       </Stack>
     </Paper>
   );
