@@ -14,7 +14,7 @@ function PlayerContainer({ hitters, pitchers }: PlayerContainerProps) {
   return (
     <Paper
       sx={{
-        p: 2,
+        // p: 2,
         width: "100%",
         overflowX: "auto",
         scrollBarWidth: "none",
@@ -23,7 +23,7 @@ function PlayerContainer({ hitters, pitchers }: PlayerContainerProps) {
       <Stack
         direction="row"
         spacing={2}
-        sx={{ width: "100%", overflowX: "auto", flexWrap: "nowrap" }}
+        sx={{ py: 0.5, width: "100%", overflowX: "auto", flexWrap: "nowrap" }}
       >
         {hitters?.map((hitter: Hitter) => (
           <HitterCard hitter={hitter} />

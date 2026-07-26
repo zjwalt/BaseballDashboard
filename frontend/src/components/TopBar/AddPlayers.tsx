@@ -3,7 +3,6 @@ import { useDashboard } from "../../context/DashboardContext";
 import {
   Autocomplete,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -24,14 +23,17 @@ function AddPlayers() {
     useDashboard();
   const [additionalPlayers, setAdditionalPlayers] = useState<Player[]>([]);
   const [openAddPlayers, setOpenAddPlayers] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const handleClose = () => {
     setAdditionalPlayers([]);
     setOpenAddPlayers(false);
+    setSaving(false);
   };
 
   const handleSave = async () => {
     try {
+      setSaving(true);
       await addPlayers(additionalPlayers);
 
       setNewPlayers(
@@ -100,7 +102,7 @@ function AddPlayers() {
           <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleSave}>
+          <Button variant="contained" loading={saving} onClick={handleSave}>
             Add
           </Button>
         </DialogActions>

@@ -1,54 +1,97 @@
 import { useDashboard } from '../context/DashboardContext.tsx';
-import { useEffect } from 'react';
-import { fetchPitchers } from '../services/api';
-import { Box, Stack, Typography } from '@mui/material';
-
+import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import type { Pitcher } from '../types/pitcher';
-import { PlayerContainer } from '../components';
+import { PlayerContainer, EditPlayerOrderDialog } from '../components';
+import { applyPreferences } from '../utils/preferences';
+import { useState } from 'react';
+import EditIcon from '@mui/icons-material/Edit';
 
 function PitchersPage() {
-  const { pitchers, currentPlayers, setPitchers } = useDashboard();
+  const { pitchers, openOrderDialog, setOpenOrderDialog } = useDashboard();
+  const [activeStorageKey, setActiveStorageKey] = useState<string>('');
 
-  useEffect(() => {
-    fetchPitchers()
-      .then((pitchersData: Pitcher[]) => {
-        setPitchers(pitchersData);
-      })
-      .catch((err: Error) => console.error(err.message));
-  }, [currentPlayers]);
-
-  const piratesPitchers = pitchers.filter(
-    (pitcher: Pitcher) => pitcher.team === 'PIT',
+  const piratesPitchers = applyPreferences(
+    pitchers.filter((p: Pitcher) => p.team === 'PIT'),
+    "pirates_pitchers_preferences"
   );
 
-  const otherPitchers = pitchers.filter(
-    (pitcher: Pitcher) => pitcher.team !== 'PIT',
+  const otherPitchers = applyPreferences(
+    pitchers.filter((p: Pitcher) => p.team !== 'PIT'),
+    "other_pitchers_preferences"
   );
 
+  const handleEdit = (storageKey: string) => {
+    setActiveStorageKey(storageKey);
+    setOpenOrderDialog(true);
+  };
+
+  const activePlayers = activeStorageKey === "pirates_pitchers_preferences"
+    ? pitchers.filter((p: Pitcher) => p.team === 'PIT')
+    : pitchers.filter((p: Pitcher) => p.team !== 'PIT');
 
   return (
-    <Box
-      sx={{
-        p: 3,
-        display: 'flex',
-        height: '100%',
-        width: '100%'
-      }}
-    >
+    <Box sx={{ p: 3, display: 'flex', height: '100%', width: '100%' }}>
       <Stack direction='column' spacing={3} sx={{ width: '100%' }}>
-        <Stack direction='column' sx={{ width: '100%', pr: 3 }}>
-          <Typography variant='h5'>Pittsburgh Pirates</Typography>
+        <Stack direction='column' spacing={0.5} sx={{ width: '100%' }}>
+          <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography variant='h5'>Pittsburgh Pirates</Typography>
+            <Tooltip
+              title='Edit Player Order'
+              slotProps={{
+                popper: {
+                  modifiers: [
+                    {
+                      name: 'offset',
+                      options: {
+                        offset: [0, -6]
+                      }
+                    }
+                  ]
+                }
+              }}
+            >
+              <IconButton size='small' onClick={() => handleEdit("pirates_pitchers_preferences")}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
           <PlayerContainer pitchers={piratesPitchers} />
         </Stack>
-
-        <Stack direction='column' sx={{ width: '100%', pr: 3 }}>
-          <Typography variant='h5'>Other Pitchers</Typography>
+        <Stack direction='column' spacing={0.5} sx={{ width: '100%' }}>
+          <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>
+            <Typography variant='h5'>Other Pitchers</Typography>
+            <Tooltip
+              title='Edit Player Order'
+              slotProps={{
+                popper: {
+                  modifiers: [
+                    {
+                      name: 'offset',
+                      options: {
+                        offset: [0, -6]
+                      }
+                    }
+                  ]
+                }
+              }}
+            >
+              <IconButton size='small' onClick={() => handleEdit("other_pitchers_preferences")}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
           <PlayerContainer pitchers={otherPitchers} />
         </Stack>
       </Stack>
+      <EditPlayerOrderDialog
+        open={openOrderDialog}
+        onClose={() => setOpenOrderDialog(false)}
+        players={activePlayers}
+        type="pitcher"
+        storageKey={activeStorageKey}
+      />
     </Box>
-  )
-
+  );
 }
 
 export default PitchersPage;

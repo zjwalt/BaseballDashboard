@@ -1,7 +1,7 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 
-export const theme = createTheme({
+export const theme = responsiveFontSizes(createTheme({
   palette: {
     mode: 'dark',
     background: {
@@ -28,11 +28,11 @@ export const theme = createTheme({
   typography: {
     fontFamily: "JetBrains Mono, 'DM Sans', sans-serif",
     h1: { fontWeight: 700, letterSpacing: '-0.03em', color: '#ede7f6' },
-    h2: { fontWeight: 700, letterSpacing: '-0.02em', color: '#ede7f6'},
+    h2: { fontWeight: 700, letterSpacing: '-0.02em', color: '#ede7f6' },
     h3: { fontWeight: 600, letterSpacing: '-0.01em' },
     h4: { fontWeight: 600 },
     body1: { fontSize: 14 },
-    body2: { fontSize: 12, color: '#9e8fb5'},
+    body2: { fontSize: 12, color: '#9e8fb5' },
     caption: {
       fontSize: 10,
       textTransform: "uppercase" as const,
@@ -103,7 +103,7 @@ export const theme = createTheme({
         root: {
           backgroundColor: '#2e1f4a',
           color: '#b39ddb',
-          fontFamily:"'DM Mono', monospace",
+          fontFamily: "'DM Mono', monospace",
           fontSize: 11,
         },
       },
@@ -144,7 +144,7 @@ export const theme = createTheme({
       },
     },
   },
-});
+}));
 
 export const colors = {
   // Backgrounds

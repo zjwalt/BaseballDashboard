@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import { useMediaQuery, useTheme } from '@mui/material';
 
 import type { Hitter } from "../types/hitter";
 import type { Player } from "../types/player";
@@ -18,6 +19,7 @@ interface DashboardContextProps {
   setTab: React.Dispatch<React.SetStateAction<number>>;
   openOrderDialog: boolean;
   setOpenOrderDialog: React.Dispatch<React.SetStateAction<boolean>>;
+  isMobile: boolean;
 }
 
 const DashboardContext = createContext<DashboardContextProps | null>(null);
@@ -28,6 +30,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [newPlayers, setNewPlayers] = useState<Player[]>([]);
   const [currentPlayers, setCurrentPlayers] = useState<Player[]>([]);
   const [openOrderDialog, setOpenOrderDialog] = useState<boolean>(false);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const getActiveTab = () => {
     if (location.pathname.startsWith("/pitchers")) return 1;
@@ -48,7 +53,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     tab,
     setTab,
     openOrderDialog,
-    setOpenOrderDialog
+    setOpenOrderDialog,
+    isMobile
   };
 
   return (

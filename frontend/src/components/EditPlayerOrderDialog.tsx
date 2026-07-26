@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
-import { useDashboard } from '../context/DashboardContext';
-import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItem, Stack, Typography } from '@mui/material'
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent, } from '@dnd-kit/core';
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, Typography } from '@mui/material'
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities';
 import type { Hitter } from '../types/hitter';
 import type { Pitcher } from '../types/pitcher';
-import type { Player } from '../types/player';
 import CloseIcon from '@mui/icons-material/Close';
 import DragHandleIcon from '@mui/icons-material/DragHandle';
-
+import { loadPreferences } from '../utils/preferences';
 
 interface SortablePlayerRowProps {
   player: Hitter | Pitcher;
@@ -28,7 +26,7 @@ function SortablePlayerRow({ player, hidden, onToggle }: SortablePlayerRowProps)
   };
 
   return (
-    <ListItem ref={setNodeRef} style={style} sx={{ px: 0 }}>
+    <Box ref={setNodeRef} style={style}>
       <Stack direction='row' sx={{ alignItems: 'center', width: '100%' }}>
         <IconButton {...attributes} {...listeners} size='small' sx={{ cursor: 'grab' }}>
           <DragHandleIcon />
@@ -43,8 +41,8 @@ function SortablePlayerRow({ player, hidden, onToggle }: SortablePlayerRowProps)
           {player.team} | {player.position}
         </Typography>
       </Stack>
-    </ListItem>
-  )
+    </Box>
+  );
 }
 
 interface EditPlayersDialogProps {
@@ -52,26 +50,29 @@ interface EditPlayersDialogProps {
   onClose: () => void;
   players: Hitter[] | Pitcher[];
   type: "hitter" | "pitcher";
+  storageKey: string;
 }
 
-function EditPlayersDialog({ open, onClose, players, type }: EditPlayersDialogProps) {
-  const [orderedPlayers, setOrderedPlayers] = useState<Hitter[] | Pitcher[]>(players);
+function EditPlayersDialog({ open, onClose, players, type, storageKey }: EditPlayersDialogProps) {
+  const [orderedPlayers, setOrderedPlayers] = useState<Hitter[] | Pitcher[]>([]);
   const [hiddenIds, setHiddenIds] = useState<number[]>([]);
 
   const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => {
     if (open) {
-      setOrderedPlayers(players);
+      const { orderedPlayers, hiddenIds } = loadPreferences(players, storageKey);
+      setOrderedPlayers(orderedPlayers);
+      setHiddenIds(hiddenIds);
     }
-  }, [open, players]);
+  }, [open, players, storageKey]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     const oldIndex = orderedPlayers.findIndex(p => p.player_id === active.id);
     const newIndex = orderedPlayers.findIndex(p => p.player_id === over.id);
-    setOrderedPlayers(arrayMove(orderedPlayers, oldIndex, newIndex));
+    setOrderedPlayers(arrayMove(orderedPlayers as Hitter[], oldIndex, newIndex));
   };
 
   const handleToggle = (id: number) => {
@@ -81,38 +82,43 @@ function EditPlayersDialog({ open, onClose, players, type }: EditPlayersDialogPr
   };
 
   const handleSave = () => {
-    localStorage.setItem(`${type}_preferences`, JSON.stringify({
+    localStorage.setItem(storageKey, JSON.stringify({
       order: orderedPlayers.map(p => p.player_id),
       hidden: hiddenIds,
     }));
     onClose();
   };
 
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Edit Players</DialogTitle>
+      <DialogTitle>
+        <Stack direction='row' sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant='h6'>Edit Players</Typography>
+          <IconButton size='small' onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+      </DialogTitle>
       <DialogContent>
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext
-            items={orderedPlayers.map(p => p.player_id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <List disablePadding>
-              {orderedPlayers.map(player => {
-                console.log(player);
-                return (
+        <Box sx={{ maxHeight: '400px', px: 1, border: '1px solid', borderColor: 'primary.main', borderRadius: 1, overflowY: 'auto', scrollbarWidth: 'none' }}>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext
+              items={orderedPlayers.map(p => p.player_id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <Stack direction='column' divider={<Divider flexItem />}>
+                {orderedPlayers.map(player => (
                   <SortablePlayerRow
                     key={player.player_id}
                     player={player}
                     hidden={hiddenIds.includes(player.player_id)}
                     onToggle={handleToggle}
                   />
-                )
-              })}
-            </List>
-          </SortableContext>
-        </DndContext>
+                ))}
+              </Stack>
+            </SortableContext>
+          </DndContext>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onClose}>Cancel</Button>

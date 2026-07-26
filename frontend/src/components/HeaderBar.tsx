@@ -62,7 +62,7 @@ function HeaderBar() {
       </Box>
 
       <Stack direction="row" spacing={2}>
-        <SearchPlayers />
+        {/* <SearchPlayers /> */}
         <AddPlayers />
       </Stack>
     </Stack>

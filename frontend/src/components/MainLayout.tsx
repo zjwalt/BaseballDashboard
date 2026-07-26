@@ -4,11 +4,13 @@ import { Link, Outlet } from "react-router-dom";
 import { Box, Tab, Tabs } from "@mui/material";
 import HeaderBar from "./HeaderBar";
 
-import { fetchNewPlayersList, fetchCurrentPlayersList } from "../services/api";
+import { fetchHitters, fetchPitchers, fetchNewPlayersList, fetchCurrentPlayersList } from "../services/api";
 import type { Player } from "../types/player";
+import type { Hitter } from "../types/hitter";
+import type { Pitcher } from "../types/pitcher";
 
 function MainLayout() {
-  const { currentPlayers, newPlayers, setCurrentPlayers, setNewPlayers } =
+  const { currentPlayers, newPlayers, hitters, pitchers, setCurrentPlayers, setNewPlayers, setHitters, setPitchers } =
     useDashboard();
 
   useEffect(() => {
@@ -24,6 +26,19 @@ function MainLayout() {
       })
       .catch((err: Error) => console.error(err.message));
   }, []);
+
+  useEffect(() => {
+    fetchHitters()
+      .then((hitterData: Hitter[]) => {
+        setHitters(hitterData);
+      })
+      .catch((err: Error) => console.error(err.message));
+    fetchPitchers()
+      .then((pitchersData: Pitcher[]) => {
+        setPitchers(pitchersData);
+      })
+      .catch((err: Error) => console.error(err.message));
+  }, [currentPlayers]);
 
   const getActiveTab = () => {
     if (location.pathname.startsWith("/pitchers")) return 1;
