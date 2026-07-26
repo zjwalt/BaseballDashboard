@@ -1,12 +1,15 @@
 import { Card, Divider, Stack, Typography } from "@mui/material";
 import type { Hitter, HitterPercentiles } from "../types/hitter";
 import { colors } from "../theme/theme";
+import { useDashboard } from "../context/DashboardContext";
 
 interface HitterCardProps {
   hitter: Hitter;
 }
 
 function HitterCard({ hitter }: HitterCardProps) {
+  const { isMobile } = useDashboard();
+
   const handleColor = (percentile: number): string => {
     if (percentile >= 90) return colors.percentile.elite;
     if (percentile >= 70) return colors.percentile.great;
@@ -25,27 +28,78 @@ function HitterCard({ hitter }: HitterCardProps) {
     bbPct: "BB%",
     exitVelo: "EV",
     launchAngle: "LA",
-    barrelPct: "Barrel %",
-    whiffPct: "Whiff %",
-    chasePct: "Chase %",
-    hardHitPct: "Hard-Hit %",
-    sweetSpotPct: "Sweet-Spot %",
+    barrelPct: isMobile ? "Brl%" : "Barrel %",
+    whiffPct: isMobile ? "Whiff%" : "Whiff %",
+    chasePct: isMobile ? "Chase%" : "Chase %",
+    hardHitPct: isMobile ? "HH%" : "Hard-Hit %",
+    sweetSpotPct: isMobile ? "SS%" : "Sweet-Spot %",
     wRCPlus: "wRC+",
     opsPlus: "OPS+",
-    batSpeed: "Bat Speed",
+    batSpeed: isMobile ? "Bat Spd" : "Bat Speed",
   };
+
+  // Compact, content-hugging stat "chip" on mobile; normal spacing on desktop.
+  const renderStatGroup = (
+    entries: [string, unknown][],
+    withPercentileColor = false,
+  ) => (
+    <Stack
+      direction="row"
+      sx={{
+        flexWrap: 'wrap',
+        mt: isMobile ? 0.75 : 1,
+        columnGap: isMobile ? 1.25 : 1.5,
+        rowGap: isMobile ? 0.5 : 1.25,
+      }}
+    >
+      {entries.map(([key, value]) => (
+        <Stack
+          key={key}
+          direction="column"
+          spacing={isMobile ? 0 : 0.5}
+          sx={{ width: "auto", flex: "0 0 auto", alignItems: 'center' }}
+        >
+          <Typography
+            variant={isMobile ? "caption" : "body2"}
+            sx={{ whiteSpace: "nowrap", lineHeight: isMobile ? 1.1 : "normal", fontSize: isMobile ? 10 : undefined, color: '#5c4f70' }}
+          >
+            {statLabels[key] ?? key}
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              whiteSpace: "nowrap",
+              lineHeight: isMobile ? 1.2 : "normal",
+              fontSize: isMobile ? 12.5 : undefined,
+              color:
+                withPercentileColor &&
+                  percentiles[key as keyof HitterPercentiles]
+                  ? handleColor(percentiles[key as keyof HitterPercentiles])
+                  : "",
+            }}
+          >
+            {String(value)}
+          </Typography>
+        </Stack>
+      ))}
+    </Stack>
+  );
 
   return (
     <Card
       sx={{
-        p: 1,
+        p: isMobile ? 1.25 : 1,
         flexShrink: 0,
-        width: "550px",
-        height: "250px",
+        width: isMobile ? "100%" : "550px",
+        height: "auto",
+        boxSizing: "border-box",
       }}
     >
       {/* Player info (name, number, position, ...) */}
-      <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+      <Stack
+        direction="row"
+        sx={{ justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}
+      >
         <Typography variant="h6">{hitter.name}</Typography>
         <Stack
           direction="row"
@@ -61,9 +115,7 @@ function HitterCard({ hitter }: HitterCardProps) {
           sx={{ alignItems: "center" }}
         >
           <Typography variant="body1">#{hitter.number}</Typography>
-
           <Typography variant="body1">{hitter.position}</Typography>
-
           <Typography variant="body1">
             {hitter.bat}/{hitter.throw}
           </Typography>
@@ -71,84 +123,16 @@ function HitterCard({ hitter }: HitterCardProps) {
       </Stack>
 
       {/* Player Traditional Stats */}
-      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-        {Object.entries(hitter.traditional).map(([key, value]) => (
-          <Stack
-            direction="column"
-            spacing={0.5}
-            sx={{ display: "flex", width: "auto", alignItems: "center" }}
-          >
-            <Typography variant="body2" sx={{}}>
-              {statLabels[key] ?? key}
-            </Typography>
-            <Typography variant="body2">{value}</Typography>
-          </Stack>
-        ))}
-      </Stack>
+      {renderStatGroup(Object.entries(hitter.traditional))}
 
       {/* Player Advanced Stats */}
-      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-        {Object.entries(hitter.advanced).map(([key, value]) => (
-          <Stack
-            direction="column"
-            spacing={0.5}
-            sx={{ width: "auto", alignItems: "center" }}
-          >
-            <Typography variant="body2">{statLabels[key] ?? key}</Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: percentiles[key as keyof HitterPercentiles]
-                  ? handleColor(percentiles[key as keyof HitterPercentiles])
-                  : "",
-              }}
-            >
-              {value}
-            </Typography>
-          </Stack>
-        ))}
-      </Stack>
+      {renderStatGroup(Object.entries(hitter.advanced), true)}
 
       {/* Player Statcast Advanced Stats */}
-      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-        {Object.entries(hitter.statcastAdv).map(([key, value]) => (
-          <Stack
-            direction="column"
-            spacing={0.5}
-            sx={{ width: "auto", alignItems: "center" }}
-          >
-            <Typography variant="body2" sx={{}}>
-              {statLabels[key] ?? key}
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{
-                color: percentiles[key as keyof HitterPercentiles]
-                  ? handleColor(percentiles[key as keyof HitterPercentiles])
-                  : "",
-              }}
-            >
-              {value}
-            </Typography>
-          </Stack>
-        ))}
-      </Stack>
+      {renderStatGroup(Object.entries(hitter.statcastAdv), true)}
 
       {/* Player Percentile Ranks */}
-      <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
-        {Object.entries(hitter.percentiles).map(([key, value]) => (
-          <Stack
-            direction="column"
-            spacing={0.5}
-            sx={{ display: "flex", width: "auto", alignItems: "center" }}
-          >
-            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              {statLabels[key] ?? key}
-            </Typography>
-            <Typography variant="body2">{value}</Typography>
-          </Stack>
-        ))}
-      </Stack>
+      {renderStatGroup(Object.entries(hitter.percentiles))}
     </Card>
   );
 }

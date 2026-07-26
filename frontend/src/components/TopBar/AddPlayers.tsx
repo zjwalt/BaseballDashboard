@@ -19,7 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
 function AddPlayers() {
-  const { newPlayers, currentPlayers, setNewPlayers, setCurrentPlayers } =
+  const { newPlayers, currentPlayers, isMobile, setNewPlayers, setCurrentPlayers } =
     useDashboard();
   const [additionalPlayers, setAdditionalPlayers] = useState<Player[]>([]);
   const [openAddPlayers, setOpenAddPlayers] = useState(false);
@@ -58,16 +58,16 @@ function AddPlayers() {
       <Button variant="contained" onClick={() => setOpenAddPlayers(true)}>
         <AddIcon />
       </Button>
-      <Dialog open={openAddPlayers}>
-        <DialogTitle>
-          <Stack direction="row" sx={{ justifyContent: "space-between" }}>
+      <Dialog open={openAddPlayers} fullWidth>
+        <DialogTitle sx={{ px: 1.5 }}>
+          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: "space-between" }}>
             <Typography variant="h6">Add New Players</Typography>
             <IconButton color="primary" onClick={handleClose}>
               <CloseIcon />
             </IconButton>
           </Stack>
         </DialogTitle>
-        <DialogContent sx={{}}>
+        <DialogContent sx={{ px: isMobile ? 1 : 3, pb: isMobile ? 1.5 : 2 }}>
           <Autocomplete<Player, true>
             options={newPlayers}
             multiple
@@ -84,14 +84,18 @@ function AddPlayers() {
               </li>
             )}
             renderInput={(params) => (
-              <TextField {...params} label="Add Player(s)" variant="outlined" />
+              <TextField
+                {...params}
+                label="Add Player(s)"
+                variant="outlined"
+              />
             )}
             onChange={(_: React.SyntheticEvent, value: Player[]) => {
               setAdditionalPlayers(value);
             }}
             sx={{
               pt: 1,
-              width: 320,
+              // width: 320,
               "& .MuiChip-label": {
                 mt: 0.5,
               },

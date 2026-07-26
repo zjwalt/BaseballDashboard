@@ -1,51 +1,47 @@
-import { useEffect, useState, type SetStateAction } from "react";
+import { useEffect } from "react";
 import { useDashboard } from "../context/DashboardContext";
-import { Link, Outlet } from "react-router-dom";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import { Box } from "@mui/material";
 import HeaderBar from "./HeaderBar";
 
-import { fetchHitters, fetchPitchers, fetchNewPlayersList, fetchCurrentPlayersList } from "../services/api";
+import {
+  fetchHitters,
+  fetchPitchers,
+  fetchNewPlayersList,
+  fetchCurrentPlayersList,
+} from "../services/api";
 import type { Player } from "../types/player";
 import type { Hitter } from "../types/hitter";
 import type { Pitcher } from "../types/pitcher";
 
 function MainLayout() {
-  const { currentPlayers, newPlayers, hitters, pitchers, setCurrentPlayers, setNewPlayers, setHitters, setPitchers } =
-    useDashboard();
+  const {
+    currentPlayers,
+    setCurrentPlayers,
+    setNewPlayers,
+    setHitters,
+    setPitchers,
+    isMobile,
+  } = useDashboard();
 
   useEffect(() => {
     fetchCurrentPlayersList()
-      .then((currentPlayers: Player[]) => {
-        setCurrentPlayers(currentPlayers);
-      })
+      .then((players: Player[]) => setCurrentPlayers(players))
       .catch((err: Error) => console.error(err.message));
 
     fetchNewPlayersList()
-      .then((players: Player[]) => {
-        setNewPlayers(players);
-      })
+      .then((players: Player[]) => setNewPlayers(players))
       .catch((err: Error) => console.error(err.message));
   }, []);
 
   useEffect(() => {
     fetchHitters()
-      .then((hitterData: Hitter[]) => {
-        setHitters(hitterData);
-      })
+      .then((hitterData: Hitter[]) => setHitters(hitterData))
       .catch((err: Error) => console.error(err.message));
     fetchPitchers()
-      .then((pitchersData: Pitcher[]) => {
-        setPitchers(pitchersData);
-      })
+      .then((pitchersData: Pitcher[]) => setPitchers(pitchersData))
       .catch((err: Error) => console.error(err.message));
   }, [currentPlayers]);
-
-  const getActiveTab = () => {
-    if (location.pathname.startsWith("/pitchers")) return 1;
-    return 0;
-  };
-
-  const [tab, setTab] = useState(getActiveTab());
 
   return (
     <Box
@@ -53,16 +49,20 @@ function MainLayout() {
         p: 2,
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
+        minHeight: "100vh",
         width: "100vw",
+        boxSizing: "border-box",
       }}
     >
       <HeaderBar />
 
       <Box
         sx={{
-          height: `calc(100vh - 48px)`,
+          mt: isMobile ? 1 : 0,
+          pb: 2,
           width: "100%",
+          flex: 1,
+          overflowY: "auto",
         }}
       >
         <Outlet />

@@ -6,8 +6,9 @@ import { applyPreferences } from '../utils/preferences';
 import { useState } from 'react';
 import EditIcon from '@mui/icons-material/Edit';
 
+
 function PitchersPage() {
-  const { pitchers, openOrderDialog, setOpenOrderDialog } = useDashboard();
+  const { pitchers, openOrderDialog, isMobile, setOpenOrderDialog } = useDashboard();
   const [activeStorageKey, setActiveStorageKey] = useState<string>('');
 
   const piratesPitchers = applyPreferences(
@@ -30,7 +31,7 @@ function PitchersPage() {
     : pitchers.filter((p: Pitcher) => p.team !== 'PIT');
 
   return (
-    <Box sx={{ p: 3, display: 'flex', height: '100%', width: '100%' }}>
+    <Box sx={{ pt: 2, pb: 100, px: isMobile ? 0 : 2, display: 'flex', height: '100%', width: '100%' }}>
       <Stack direction='column' spacing={3} sx={{ width: '100%' }}>
         <Stack direction='column' spacing={0.5} sx={{ width: '100%' }}>
           <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>

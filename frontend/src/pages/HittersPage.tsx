@@ -30,7 +30,7 @@ function HittersPage() {
     : hitters.filter((h: Hitter) => h.team !== "PIT");
 
   return (
-    <Box sx={{ display: "flex", height: "100%", width: "100%" }}>
+    <Box sx={{ pt: 2, pb: 100, display: "flex", height: "100%", width: "100%" }}>
       <Stack direction="column" spacing={3} sx={{ width: "100%" }}>
         <Stack direction="column" spacing={0.5} sx={{ width: "100%" }}>
           <Stack direction='row' spacing={2} sx={{ alignItems: 'center' }}>

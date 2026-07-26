@@ -1,9 +1,10 @@
-import { Box, Paper, Stack } from "@mui/material";
-import type { Hitter } from "../types/hitter";
-import type { Pitcher } from '../types/pitcher';
+import { Paper, Stack } from "@mui/material";
+import type { Hitter } from "../types/hitter.ts";
+import type { Pitcher } from '../types/pitcher.ts';
+import { useDashboard } from "../context/DashboardContext.tsx";
 
-import { HitterCard } from "./";
-import { PitcherCard } from "./index.ts";
+import HitterCard from "./HitterCard.tsx";
+import PitcherCard from "./PitcherCard.tsx";
 
 interface PlayerContainerProps {
   hitters?: Hitter[];
@@ -11,28 +12,38 @@ interface PlayerContainerProps {
 }
 
 function PlayerContainer({ hitters, pitchers }: PlayerContainerProps) {
+  const { isMobile } = useDashboard();
+
   return (
     <Paper
       sx={{
-        // p: 2,
         width: "100%",
-        overflowX: "auto",
+        overflowX: isMobile ? "visible" : "auto",
+        // Cap each section's height on mobile so the page itself doesn't
+        // grow forever with every player stacked - scroll within the section instead.
+        maxHeight: isMobile ? "40vh" : "none",
+        overflowY: isMobile ? "auto" : "visible",
         scrollBarWidth: "none",
       }}
     >
       <Stack
-        direction="row"
-        spacing={2}
-        sx={{ py: 0.5, width: "100%", overflowX: "auto", flexWrap: "nowrap" }}
+        direction={isMobile ? "column" : "row"}
+        spacing={isMobile ? 1.5 : 2}
+        sx={{
+          py: isMobile ? 1 : 1,
+          px: isMobile ? 1 : 1,
+          width: "100%",
+          overflowX: isMobile ? "visible" : "auto",
+          flexWrap: "nowrap",
+        }}
       >
         {hitters?.map((hitter: Hitter) => (
-          <HitterCard hitter={hitter} />
+          <HitterCard key={hitter.player_id} hitter={hitter} />
         ))}
 
         {pitchers?.map((pitcher: Pitcher) => (
-          <PitcherCard pitcher={pitcher} />
+          <PitcherCard key={pitcher.player_id} pitcher={pitcher} />
         ))}
-
       </Stack>
     </Paper>
   );

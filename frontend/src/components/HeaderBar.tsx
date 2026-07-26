@@ -1,13 +1,11 @@
-import { useState, type SetStateAction } from "react";
+import { type SetStateAction } from "react";
 import { useDashboard } from "../context/DashboardContext";
 import { Link } from "react-router-dom";
-import { Autocomplete, Box, Button, Stack, Tab, Tabs } from "@mui/material";
-import SearchPlayers from "./TopBar/SearchPlayers";
-
+import { Box, Stack, Tab, Tabs } from "@mui/material";
 import AddPlayers from "./TopBar/AddPlayers";
 
 function HeaderBar() {
-  const { hitters, tab, setTab } = useDashboard();
+  const { tab, setTab, isMobile } = useDashboard();
 
   const handleTabChange = (
     event: React.SyntheticEvent,
@@ -19,18 +17,20 @@ function HeaderBar() {
   return (
     <Stack
       direction="row"
+      spacing={isMobile ? 1 : 0}
       sx={{ display: "flex", justifyContent: "space-between" }}
     >
       <Box>
         <Tabs
           value={tab}
           onChange={handleTabChange}
+          variant={isMobile ? "fullWidth" : "standard"}
           sx={{
             backgroundColor: "background.paper",
             borderRadius: 1,
             padding: 0.5,
             height: 6,
-            width: "fit-content",
+            width: isMobile ? "100%" : "fit-content",
             "& .MuiTab-root": {
               minHeight: 36,
               borderRadius: 1,
@@ -61,8 +61,11 @@ function HeaderBar() {
         </Tabs>
       </Box>
 
-      <Stack direction="row" spacing={2}>
-        {/* <SearchPlayers /> */}
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ justifyContent: isMobile ? "flex-end" : "flex-start" }}
+      >
         <AddPlayers />
       </Stack>
     </Stack>

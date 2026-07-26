@@ -3,6 +3,8 @@ import { HittersPage, PitchersPage } from "./pages";
 import { MainLayout } from "./components";
 import { Box } from "@mui/material";
 
+import tmpMainLayout from './components/temp/TmpMainLayout.tsx';
+
 function App() {
   return (
     <Routes>

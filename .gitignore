@@ -27,4 +27,4 @@ dist-ssr
 pyrightconfig.json
 .env
 
-__pycache__
+.cache_store
