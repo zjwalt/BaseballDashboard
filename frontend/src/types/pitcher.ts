@@ -1,4 +1,3 @@
-
 export interface PitcherTraditionalStats {
   ERA: number;
   IP: number;
@@ -30,6 +29,27 @@ export interface PitcherAdvancedStats {
   kBB: number;
 }
 
+export interface PitcherStatcastAdvanced {
+  exitVelo: number;
+  launchAngle: number;
+  hardHitPct: number;
+  barrelPct: number;
+  sweetSpotPct: number;
+}
+
+export interface PitcherPercentiles {
+  xBA: number;
+  xSLG: number;
+  xwOBA: number;
+  barrelPct: number;
+  kPct: number;
+  bbPct: number;
+  whiffPct: number;
+  chasePct: number;
+  exitVelo: number;
+  hardHitPct: number;
+}
+
 export interface Pitcher {
   id: number;
   player_id: number;
@@ -41,4 +61,6 @@ export interface Pitcher {
   bat: string;
   traditional: PitcherTraditionalStats;
   advanced: PitcherAdvancedStats;
+  statcastAdv: PitcherStatcastAdvanced;
+  percentiles: PitcherPercentiles;
 }

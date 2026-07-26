@@ -29,35 +29,31 @@ class PitcherAdvancedStats(BaseModel):
     HR9: float
     BB9: float
     SO9: float
-    # HRPct: float
-    # KPct: float
-    # BBPct: float
+    HRPct: float
+    KPct: float
+    BBPct: float
     kBB: float
 
 
 class PitcherStatcastStats(BaseModel):
-    fastballVelo: float
-    spinRat: int
-    exitVeloAgainst: float
-    whiffPct: float
-    chasePct: float
+    exitVelo: float
+    launchAngle: float
+    hardHitPct: float
+    barrelPct: float
+    sweetSpotPct: float
 
 
 class PitcherPercentiles(BaseModel):
-    xwOBA: int
     xBA: int
     xSLG: int
-    xISO: int
-    xOBP: int
-    brl: int
-    brlPct: int
-    exitVelocity: int
-    maxEv: int
-    hardHitPct: int
+    xwOBA: int
+    barrelPct: int
+    kPct: int
     bbPct: int
     whiffPct: int
     chasePct: int
-    xera: int
+    exitVelo: int
+    hardHitPct: int
 
 
 class Pitcher(BaseModel):
@@ -71,5 +67,5 @@ class Pitcher(BaseModel):
     bat: str
     traditional: PitcherTraditionalStats
     advanced: PitcherAdvancedStats
-    # statcast: PitcherStatcastStats
-    # percentiles: PitcherPercentiles
+    statcastAdv: PitcherStatcastStats
+    percentiles: PitcherPercentiles

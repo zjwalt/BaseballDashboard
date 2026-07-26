@@ -61,6 +61,10 @@ class BaseballRefScraper:
             df["AB"] + df["BB"] + df["HBP"] + df["SF"]
         )
 
+        df["k%"] = round((df["SO"] / df["BF"]) * 100, 1)
+        df["bb%"] = round((df["BB"] / df["BF"]) * 100, 1)
+        df["hr%"] = round((df["HR"] / df["BF"]) * 100, 1)
+
         df["H9"] = (df["H"] / df["IP"]) * 9
         df["HR9"] = (df["HR"] / df["IP"]) * 9
         df["BB9"] = (df["BB"] / df["IP"]) * 9

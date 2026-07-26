@@ -211,7 +211,7 @@ class HitterService:
                 whiffPct=self._pi(pct, "whiff_percent"),
                 chasePct=self._pi(pct, "chase_percent"),
                 exitVelo=self._pi(pct, "exit_velocity"),
-                hardHitPct=self._pi(pct, "had_hit_percent"),
+                hardHitPct=self._pi(pct, "hard_hit_percent"),
                 batSpeed=self._pi(pct, "bat_speed"),
             ),
         )

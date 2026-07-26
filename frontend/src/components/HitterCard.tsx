@@ -2,6 +2,7 @@ import { Card, Divider, Stack, Typography } from "@mui/material";
 import type { Hitter, HitterPercentiles } from "../types/hitter";
 import { colors } from "../theme/theme";
 import { useDashboard } from "../context/DashboardContext";
+import { formatStat } from "../utils/format.ts";
 
 interface HitterCardProps {
   hitter: Hitter;
@@ -41,14 +42,15 @@ function HitterCard({ hitter }: HitterCardProps) {
   // Compact, content-hugging stat "chip" on mobile; normal spacing on desktop.
   const renderStatGroup = (
     entries: [string, unknown][],
+    statGroup: string,
     withPercentileColor = false,
   ) => (
     <Stack
       direction="row"
       sx={{
-        flexWrap: 'wrap',
+        flexWrap: "wrap",
         mt: isMobile ? 0.75 : 1,
-        columnGap: isMobile ? 1.25 : 1.5,
+        columnGap: isMobile ? 1.25 : 1,
         rowGap: isMobile ? 0.5 : 1.25,
       }}
     >
@@ -57,11 +59,16 @@ function HitterCard({ hitter }: HitterCardProps) {
           key={key}
           direction="column"
           spacing={isMobile ? 0 : 0.5}
-          sx={{ width: "auto", flex: "0 0 auto", alignItems: 'center' }}
+          sx={{ width: "auto", flex: "0 0 auto", alignItems: "center" }}
         >
           <Typography
             variant={isMobile ? "caption" : "body2"}
-            sx={{ whiteSpace: "nowrap", lineHeight: isMobile ? 1.1 : "normal", fontSize: isMobile ? 10 : undefined, color: '#5c4f70' }}
+            sx={{
+              whiteSpace: "nowrap",
+              lineHeight: isMobile ? 1.1 : "normal",
+              fontSize: isMobile ? 10 : undefined,
+              color: "#5c4f70",
+            }}
           >
             {statLabels[key] ?? key}
           </Typography>
@@ -73,12 +80,14 @@ function HitterCard({ hitter }: HitterCardProps) {
               fontSize: isMobile ? 12.5 : undefined,
               color:
                 withPercentileColor &&
-                  percentiles[key as keyof HitterPercentiles]
+                percentiles[key as keyof HitterPercentiles]
                   ? handleColor(percentiles[key as keyof HitterPercentiles])
                   : "",
             }}
           >
-            {String(value)}
+            {statGroup === "percentiles"
+              ? String(value)
+              : formatStat(key, value)}
           </Typography>
         </Stack>
       ))}
@@ -98,7 +107,11 @@ function HitterCard({ hitter }: HitterCardProps) {
       {/* Player info (name, number, position, ...) */}
       <Stack
         direction="row"
-        sx={{ justifyContent: "space-between", alignItems: "center", flexWrap: "wrap" }}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+        }}
       >
         <Typography variant="h6">{hitter.name}</Typography>
         <Stack
@@ -123,16 +136,16 @@ function HitterCard({ hitter }: HitterCardProps) {
       </Stack>
 
       {/* Player Traditional Stats */}
-      {renderStatGroup(Object.entries(hitter.traditional))}
+      {renderStatGroup(Object.entries(hitter.traditional), "traditional")}
 
       {/* Player Advanced Stats */}
-      {renderStatGroup(Object.entries(hitter.advanced), true)}
+      {renderStatGroup(Object.entries(hitter.advanced), "advanced", true)}
 
       {/* Player Statcast Advanced Stats */}
-      {renderStatGroup(Object.entries(hitter.statcastAdv), true)}
+      {renderStatGroup(Object.entries(hitter.statcastAdv), "statcastAdv", true)}
 
       {/* Player Percentile Ranks */}
-      {renderStatGroup(Object.entries(hitter.percentiles))}
+      {renderStatGroup(Object.entries(hitter.percentiles), "percentiles")}
     </Card>
   );
 }
