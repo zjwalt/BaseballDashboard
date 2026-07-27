@@ -25,6 +25,15 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
     ERAPlus: "ERA+",
     BAbip: "BABIP",
     kBB: "K/BB",
+    kPct: "K%",
+    bbPct: "BB%",
+    exitVelo: "EV",
+    launchAngle: "LA",
+    barrelPct: isMobile ? "Brl%" : "Barrel %",
+    whiffPct: isMobile ? "Whiff%" : "Whiff %",
+    chasePct: isMobile ? "Chase%" : "Chase %",
+    hardHitPct: isMobile ? "HH%" : "Hard-Hit %",
+    sweetSpotPct: isMobile ? "SS%" : "Sweet-Spot %",
   };
 
   const renderStatGroup = (
@@ -57,7 +66,7 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
               color: "#5c4f70",
             }}
           >
-            {statLabels[key] ?? key}
+            {statLabels[key] ?? key.replace('9', '/9').replace('Pct', '%')}
           </Typography>
           <Typography
             variant="body2"
@@ -67,7 +76,7 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
               fontSize: isMobile ? 12.5 : undefined,
               color:
                 withPercentileColor &&
-                percentiles[key as keyof PitcherPercentiles]
+                  percentiles[key as keyof PitcherPercentiles]
                   ? handleColor(percentiles[key as keyof PitcherPercentiles])
                   : "",
             }}
@@ -121,13 +130,23 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
         </Stack>
       </Stack>
 
+      {/* Traditional Stats */}
       {renderStatGroup(Object.entries(pitcher.traditional), "traditional")}
-      {renderStatGroup(Object.entries(pitcher.advanced), "advanced", true)}
+
+      {/* Stats vs Pitcher */}
+      {renderStatGroup(Object.entries(pitcher.statsAgainst), "against", true)}
+
+      {/* Expected & Rate Stats */}
+      {renderStatGroup(Object.entries(pitcher.expectedRate), 'expected/rate', true)}
+
+      {/* Statcast Advanced Stats */}
       {renderStatGroup(
         Object.entries(pitcher.statcastAdv),
         "statcastAdv",
         true,
       )}
+
+      {/* Percentile Ranks */}
       {renderStatGroup(Object.entries(pitcher.percentiles), "percentiles")}
     </Card>
   );

@@ -15,7 +15,7 @@ class PitcherTraditionalStats(BaseModel):
     SV: int
 
 
-class PitcherAdvancedStats(BaseModel):
+class PitcherStatsAgainst(BaseModel):
     BA: float
     OBP: float
     SLG: float
@@ -23,16 +23,22 @@ class PitcherAdvancedStats(BaseModel):
     BAbip: float
     WHIP: float
     FIP: float
-    xFIP: float
     ERAPlus: int
+
+
+class PitcherExpectedRate(BaseModel):
+    xBA: float
+    xSLG: float
+    xwOBA: float
+    xFIP: float
     H9: float
     HR9: float
     BB9: float
-    SO9: float
+    K9: float
+    kBB: float
     HRPct: float
     KPct: float
     BBPct: float
-    kBB: float
 
 
 class PitcherStatcastStats(BaseModel):
@@ -66,6 +72,7 @@ class Pitcher(BaseModel):
     throw: str
     bat: str
     traditional: PitcherTraditionalStats
-    advanced: PitcherAdvancedStats
+    statsAgainst: PitcherStatsAgainst
+    expectedRate: PitcherExpectedRate
     statcastAdv: PitcherStatcastStats
     percentiles: PitcherPercentiles

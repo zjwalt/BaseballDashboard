@@ -12,7 +12,7 @@ export interface PitcherTraditionalStats {
   SV: number;
 }
 
-export interface PitcherAdvancedStats {
+export interface PitcherStatsAgainst {
   BA: number;
   OBP: number;
   SLG: number;
@@ -20,13 +20,22 @@ export interface PitcherAdvancedStats {
   BAbip: number;
   WHIP: number;
   FIP: number;
-  xFip: number;
   ERAPlus: number;
+}
+
+export interface PitcherExpectedRate {
+  xBA: number;
+  xSLG: number;
+  xwOBA: number;
+  xFIP: number;
   H9: number;
   HR9: number;
   BB9: number;
-  SO9: number;
   kBB: number;
+  K9: number;
+  HRPct: number;
+  KPct: number;
+  BBPct: number;
 }
 
 export interface PitcherStatcastAdvanced {
@@ -60,7 +69,8 @@ export interface Pitcher {
   throw: string;
   bat: string;
   traditional: PitcherTraditionalStats;
-  advanced: PitcherAdvancedStats;
+  statsAgainst: PitcherStatsAgainst;
+  expectedRate: PitcherExpectedRate;
   statcastAdv: PitcherStatcastAdvanced;
   percentiles: PitcherPercentiles;
 }

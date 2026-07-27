@@ -1,10 +1,10 @@
 from scrapers.base_ref import BaseballRefScraper
 from scrapers.savant import SavantScraper
-from dotenv import load_dotenv
 from models.pitcher import (
     Pitcher,
     PitcherTraditionalStats,
-    PitcherAdvancedStats,
+    PitcherStatsAgainst,
+    PitcherExpectedRate,
     PitcherStatcastStats,
     PitcherPercentiles,
 )
@@ -30,6 +30,7 @@ class PitcherService:
         conn = None
         cursor = None
         players = None
+        park_factors = {}
         try:
             conn = get_db_conn()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -109,6 +110,13 @@ class PitcherService:
 
         pitching_rows = pitching_df[pitching_df["player_id"] == mlbam_id]
         pitch_df = pitching_rows.iloc[0] if not pitching_rows.empty else None
+
+        ## Error Handling
+        if pitch_df is None:
+            raise ValueError(
+                f"[PitchingService] Missing Data for {player['playername']} ({mlbam_id})"
+            )
+
         ops = round(float(pitch_df["obp"] + pitch_df["slg"]), 3)
 
         ERA_plus = round(pitch_df["normERA"] / park_factor)
@@ -138,7 +146,7 @@ class PitcherService:
                 L=self._si(pitch_df, "L"),
                 SV=self._si(pitch_df, "SV"),
             ),
-            advanced=PitcherAdvancedStats(
+            statsAgainst=PitcherStatsAgainst(
                 BA=self._sf(pitch_df, "ba"),
                 OBP=self._sf(pitch_df, "obp"),
                 SLG=self._sf(pitch_df, "slg"),
@@ -146,16 +154,21 @@ class PitcherService:
                 BAbip=self._sf(pitch_df, "BAbip"),
                 WHIP=self._sf(pitch_df, "WHIP"),
                 FIP=self._sf(pitch_df, "FIP"),
-                xFIP=self._sf(pitch_df, "xFIP"),
                 ERAPlus=ERA_plus,
+            ),
+            expectedRate=PitcherExpectedRate(
+                xBA=self._sf(pitch_df, "est_ba"),
+                xSLG=self._sf(pitch_df, "est_slg"),
+                xwOBA=self._sf(pitch_df, "est_woba"),
+                xFIP=self._sf(pitch_df, "xFIP"),
                 H9=self._sf(pitch_df, "H9"),
                 HR9=self._sf(pitch_df, "HR9"),
                 BB9=self._sf(pitch_df, "BB9"),
-                SO9=self._sf(pitch_df, "SO9"),
+                K9=self._sf(pitch_df, "SO9"),
+                kBB=self._sf(pitch_df, "SO/W"),
                 HRPct=self._sf(pitch_df, "hr%"),
                 KPct=self._sf(pitch_df, "k%"),
                 BBPct=self._sf(pitch_df, "bb%"),
-                kBB=self._sf(pitch_df, "SO/W"),
             ),
             statcastAdv=PitcherStatcastStats(
                 exitVelo=self._sf(pitch_df, "ev50"),

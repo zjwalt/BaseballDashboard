@@ -1,4 +1,3 @@
-from pybaseball.datasources import bref
 from scrapers.savant import SavantScraper
 from scrapers.base_ref import BaseballRefScraper
 from dotenv import load_dotenv
@@ -35,6 +34,7 @@ class HitterService:
         conn = None
         cursor = None
         players = None
+        park_factors = {}
         try:
             conn = get_db_conn()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -139,6 +139,26 @@ class HitterService:
         sv_rows = savant_batting_df[savant_batting_df["player_id"] == mlbam_id]
         sv = sv_rows.iloc[0] if not sv_rows.empty else None
 
+        pct_rows = percentile_df[percentile_df["player_id"] == mlbam_id]
+        pct = pct_rows.iloc[0] if not pct_rows.empty else None
+
+        bref_rows = bref_df[bref_df["mlbID"] == mlbam_id]
+        bref = bref_rows.iloc[0] if not bref_rows.empty else None
+
+        ## Error Handling
+        if sv is None:
+            raise ValueError(
+                f"[HitterService] No Baseball Savant Data found for {player['playername']} ({mlbam_id})"
+            )
+        if pct is None:
+            raise ValueError(
+                f"[HitterService] No Percentile Data found for {player['playername']} ({mlbam_id})"
+            )
+        if bref is None:
+            raise ValueError(
+                f"[HitterService] No Baseball Reference Data found for {player['playername']} ({mlbam_id})"
+            )
+
         wRC_plus = round(
             (
                 (
@@ -149,12 +169,6 @@ class HitterService:
             )
             * 100
         )
-
-        pct_rows = percentile_df[percentile_df["player_id"] == mlbam_id]
-        pct = pct_rows.iloc[0] if not pct_rows.empty else None
-
-        bref_rows = bref_df[bref_df["mlbID"] == mlbam_id]
-        bref = bref_rows.iloc[0] if not bref_rows.empty else None
 
         ops_plus = round(bref["_ops"] / park_factor)
 
