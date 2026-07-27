@@ -28,3 +28,6 @@ pyrightconfig.json
 .env
 
 .cache_store
+__pycache__/
+*.pyc
+*.pyo
