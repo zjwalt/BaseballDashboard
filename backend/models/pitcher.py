@@ -62,6 +62,19 @@ class PitcherPercentiles(BaseModel):
     hardHitPct: int
 
 
+class PitchUsage(BaseModel):
+    FB: float | None
+    SL: float | None
+    CB: float | None
+    CH: float | None
+    SI: float | None
+    FC: float | None
+    ST: float | None
+    SV: float | None
+    KN: float | None
+    FS: float | None
+
+
 class Pitcher(BaseModel):
     id: int
     player_id: int
@@ -76,3 +89,4 @@ class Pitcher(BaseModel):
     expectedRate: PitcherExpectedRate
     statcastAdv: PitcherStatcastStats
     percentiles: PitcherPercentiles
+    usage: PitchUsage

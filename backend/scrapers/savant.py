@@ -88,6 +88,38 @@ class SavantScraper:
         _cache.set(cache_key, df.to_dict(orient="records"))
         return df
 
+    def get_pitcher_arsenal_stats(
+        self, season: int, min_pitches: int = 1
+    ) -> pd.DataFrame:
+        cache_key = f"savant_pitching_arsenal_{season}_{min_pitches}"
+        cached = _cache.get(cache_key)
+        if cached is not None:
+            return pd.DataFrame(cached)
+
+        ars_df = pybaseball.statcast_pitcher_arsenal_stats(season, minPA=min_pitches)
+
+        stat_cols = [
+            "pitch_usage",
+            "ba",
+            "woba",
+            "hard_hit_percent",
+            "whiff_percent",
+            "k_percent",
+            "run_value",
+        ]
+        stat_cols = [c for c in stat_cols if c in ars_df.columns]
+
+        df = ars_df.pivot_table(
+            index="player_id",
+            columns="pitch_type",
+            values=stat_cols,
+        )
+
+        df.columns = [f"{pitch_type}_{stat}" for stat, pitch_type in df.columns]
+        df = df.reset_index()
+        _cache.set(cache_key, df.to_dict(orient="records"))
+        return df
+
     def get_percentile_rankings(self, season: int) -> pd.DataFrame:
         """
         Returns percentile ranking for all players in a given season.

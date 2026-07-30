@@ -7,6 +7,7 @@ from models.pitcher import (
     PitcherExpectedRate,
     PitcherStatcastStats,
     PitcherPercentiles,
+    PitchUsage,
 )
 import pandas as pd
 import psycopg2
@@ -53,6 +54,7 @@ class PitcherService:
 
         savant_pitcher = self.savant.get_pitching_stats_by_season(SEASON)
         percentile_df = self.savant.get_percentile_rankings(SEASON)
+        arsenal = self.savant.get_pitcher_arsenal_stats(SEASON)
         bref_pitching = self.bref.get_pitching_stats(SEASON)
         bref_pitching["mlbID"] = bref_pitching["mlbID"].astype(int)
 
@@ -83,6 +85,7 @@ class PitcherService:
                     player=player,
                     pitching_df=pitching_df,
                     percentile_df=percentile_df,
+                    arsenal_df=arsenal,
                     park_factor=float(park_factors.get(player["playerteam"], 1.0)),
                 )
                 pitchers.append(pitcher)
@@ -103,6 +106,7 @@ class PitcherService:
         player: dict,
         pitching_df: pd.DataFrame,
         percentile_df: pd.DataFrame,
+        arsenal_df: pd.DataFrame,
         park_factor: float,
     ) -> Pitcher:
         name = player["playername"]
@@ -123,6 +127,9 @@ class PitcherService:
 
         pct_rows = percentile_df[percentile_df["player_id"] == mlbam_id]
         pct = pct_rows.iloc[0] if not pct_rows.empty else None
+
+        arsenal_rows = arsenal_df[arsenal_df["player_id"] == mlbam_id]
+        ars = arsenal_rows.iloc[0] if not arsenal_rows.empty else None
 
         return Pitcher(
             id=id,
@@ -188,6 +195,18 @@ class PitcherService:
                 chasePct=self._pi(pct, "chase_percent"),
                 exitVelo=self._pi(pct, "exit_velocity"),
                 hardHitPct=self._pi(pct, "hard_hit_percent"),
+            ),
+            usage=PitchUsage(
+                FB=self._sf(ars, "FF_pitch_usage"),
+                SL=self._sf(ars, "SL_pitch_usage"),
+                CB=self._sf(ars, "CU_pitch_usage"),
+                CH=self._sf(ars, "CH_pitch_usage"),
+                SI=self._sf(ars, "SI_pitch_usage"),
+                FC=self._sf(ars, "FC_pitch_usage"),
+                ST=self._sf(ars, "ST_pitch_usage"),
+                SV=self._sf(ars, "SV_pitch_usage"),
+                KN=self._sf(ars, "KN_pitch_usage"),
+                FS=self._sf(ars, "FS_pitch_usage"),
             ),
         )
 

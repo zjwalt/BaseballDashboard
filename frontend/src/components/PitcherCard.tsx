@@ -50,43 +50,50 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
         rowGap: isMobile ? 0.5 : 1.25,
       }}
     >
-      {entries.map(([key, value]) => (
-        <Stack
-          key={key}
-          direction="column"
-          spacing={isMobile ? 0 : 0.5}
-          sx={{ width: "auto", flex: "0 0 auto", alignItems: "center" }}
-        >
-          <Typography
-            variant={isMobile ? "caption" : "body2"}
-            sx={{
-              whiteSpace: "nowrap",
-              lineHeight: isMobile ? 1.1 : "normal",
-              fontSize: isMobile ? 10 : undefined,
-              color: "#5c4f70",
-            }}
+      {entries.map(([key, value]) => {
+
+        if (value === null || value === undefined) {
+          return null;
+        }
+
+        return (
+          <Stack
+            key={key}
+            direction="column"
+            spacing={isMobile ? 0 : 0.5}
+            sx={{ width: "auto", flex: "0 0 auto", alignItems: "center" }}
           >
-            {statLabels[key] ?? key.replace('9', '/9').replace('Pct', '%')}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              whiteSpace: "nowrap",
-              lineHeight: isMobile ? 1.2 : "normal",
-              fontSize: isMobile ? 12.5 : undefined,
-              color:
-                withPercentileColor &&
-                  percentiles[key as keyof PitcherPercentiles]
-                  ? handleColor(percentiles[key as keyof PitcherPercentiles])
-                  : "",
-            }}
-          >
-            {statGroup === "percentiles"
-              ? String(value)
-              : formatStat(key, value)}
-          </Typography>
-        </Stack>
-      ))}
+            <Typography
+              variant={isMobile ? "caption" : "body2"}
+              sx={{
+                whiteSpace: "nowrap",
+                lineHeight: isMobile ? 1.1 : "normal",
+                fontSize: isMobile ? 10 : undefined,
+                color: "#5c4f70",
+              }}
+            >
+              {statLabels[key] ?? key.replace('9', '/9').replace('Pct', '%')}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                whiteSpace: "nowrap",
+                lineHeight: isMobile ? 1.2 : "normal",
+                fontSize: isMobile ? 12.5 : undefined,
+                color:
+                  withPercentileColor &&
+                    percentiles[key as keyof PitcherPercentiles]
+                    ? handleColor(percentiles[key as keyof PitcherPercentiles])
+                    : "",
+              }}
+            >
+              {statGroup === "percentiles"
+                ? String(value)
+                : formatStat(key, value)}
+            </Typography>
+          </Stack>
+        )
+      })}
     </Stack>
   );
 
@@ -146,8 +153,11 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
         true,
       )}
 
+      {/* Pitch Usage */}
+      {renderStatGroup(Object.entries(pitcher.usage), 'usage')}
+
       {/* Percentile Ranks */}
-      {renderStatGroup(Object.entries(pitcher.percentiles), "percentiles")}
+      {/* {renderStatGroup(Object.entries(pitcher.percentiles), "percentiles")} */}
     </Card>
   );
 }

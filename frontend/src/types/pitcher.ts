@@ -59,6 +59,19 @@ export interface PitcherPercentiles {
   hardHitPct: number;
 }
 
+export interface PitchUsage {
+  FB: number | null;
+  SL: number | null;
+  CB: number | null;
+  CH: number | null;
+  SI: number | null;
+  FC: number | null;
+  ST: number | null;
+  SV: number | null;
+  KN: number | null;
+  FS: number | null;
+}
+
 export interface Pitcher {
   id: number;
   player_id: number;
@@ -73,4 +86,5 @@ export interface Pitcher {
   expectedRate: PitcherExpectedRate;
   statcastAdv: PitcherStatcastAdvanced;
   percentiles: PitcherPercentiles;
+  usage: PitchUsage;
 }
