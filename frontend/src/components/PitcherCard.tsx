@@ -34,6 +34,16 @@ function PitcherCard({ pitcher }: PitcherCardProps) {
     chasePct: isMobile ? "Chase%" : "Chase %",
     hardHitPct: isMobile ? "HH%" : "Hard-Hit %",
     sweetSpotPct: isMobile ? "SS%" : "Sweet-Spot %",
+    FB: 'Fastball %',
+    SL: 'Slider %',
+    CB: 'Curveball %',
+    CH: 'Change-up %',
+    SI: 'Sinker %',
+    FC: 'Cutter %',
+    ST: 'Sweeper %',
+    SV: 'Slurve %',
+    KN: 'Kunckleball %',
+    FS: 'Splitter %',
   };
 
   const renderStatGroup = (
