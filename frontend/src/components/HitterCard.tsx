@@ -54,43 +54,49 @@ function HitterCard({ hitter }: HitterCardProps) {
         rowGap: isMobile ? 0.5 : 1.25,
       }}
     >
-      {entries.map(([key, value]) => (
-        <Stack
-          key={key}
-          direction="column"
-          spacing={isMobile ? 0 : 0.5}
-          sx={{ width: "auto", flex: "0 0 auto", alignItems: "center" }}
-        >
-          <Typography
-            variant={isMobile ? "caption" : "body2"}
-            sx={{
-              whiteSpace: "nowrap",
-              lineHeight: isMobile ? 1.1 : "normal",
-              fontSize: isMobile ? 10 : undefined,
-              color: "#5c4f70",
-            }}
+      {entries.map(([key, value]) => {
+        if (value === null || value === undefined) {
+          return null;
+        }
+        return (
+          <Stack
+            key={key}
+            direction="column"
+            spacing={isMobile ? 0 : 0.5}
+            sx={{ width: "auto", flex: "0 0 auto", alignItems: "center" }}
           >
-            {statLabels[key] ?? key}
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{
-              whiteSpace: "nowrap",
-              lineHeight: isMobile ? 1.2 : "normal",
-              fontSize: isMobile ? 12.5 : undefined,
-              color:
-                withPercentileColor &&
-                percentiles[key as keyof HitterPercentiles]
-                  ? handleColor(percentiles[key as keyof HitterPercentiles])
-                  : "",
-            }}
-          >
-            {statGroup === "percentiles"
-              ? String(value)
-              : formatStat(key, value)}
-          </Typography>
-        </Stack>
-      ))}
+            <Typography
+              variant={isMobile ? "caption" : "body2"}
+              sx={{
+                whiteSpace: "nowrap",
+                lineHeight: isMobile ? 1.1 : "normal",
+                fontSize: isMobile ? 10 : undefined,
+                color: "#5c4f70",
+                textTransform: 'none',
+              }}
+            >
+              {statLabels[key] ?? key}
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                whiteSpace: "nowrap",
+                lineHeight: isMobile ? 1.2 : "normal",
+                fontSize: isMobile ? 12.5 : undefined,
+                color:
+                  withPercentileColor &&
+                    percentiles[key as keyof HitterPercentiles]
+                    ? handleColor(percentiles[key as keyof HitterPercentiles])
+                    : "",
+              }}
+            >
+              {statGroup === "percentiles"
+                ? String(value)
+                : formatStat(key, value)}
+            </Typography>
+          </Stack>
+        )
+      })}
     </Stack>
   );
 
@@ -143,6 +149,10 @@ function HitterCard({ hitter }: HitterCardProps) {
 
       {/* Player Statcast Advanced Stats */}
       {renderStatGroup(Object.entries(hitter.statcastAdv), "statcastAdv", true)}
+
+
+      {/* Player wOBA vs Pitch Types */}
+      {renderStatGroup(Object.entries(hitter.wOBAByPitch), "woba vs. pitch")}
 
       {/* Player Percentile Ranks */}
       {renderStatGroup(Object.entries(hitter.percentiles), "percentiles")}

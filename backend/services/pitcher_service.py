@@ -204,7 +204,7 @@ class PitcherService:
                 SI=self._sf(ars, "SI_pitch_usage"),
                 FC=self._sf(ars, "FC_pitch_usage"),
                 ST=self._sf(ars, "ST_pitch_usage"),
-                SV=self._sf(ars, "SV_pitch_usage"),
+                SLV=self._sf(ars, "SV_pitch_usage"),
                 KN=self._sf(ars, "KN_pitch_usage"),
                 FS=self._sf(ars, "FS_pitch_usage"),
             ),

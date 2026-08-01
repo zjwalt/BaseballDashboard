@@ -70,7 +70,7 @@ class PitchUsage(BaseModel):
     SI: float | None
     FC: float | None
     ST: float | None
-    SV: float | None
+    SLV: float | None
     KN: float | None
     FS: float | None
 

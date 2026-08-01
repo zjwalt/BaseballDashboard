@@ -53,7 +53,27 @@ class SavantScraper:
         if cached is not None:
             return pd.DataFrame(cached)
 
-        df = pybaseball.statcast_batter_pitch_arsenal(season, minPA=min_pa)
+        ars_df = pybaseball.statcast_batter_pitch_arsenal(season, minPA=min_pa)
+
+        stat_cols = [
+            "pitch_usage",
+            "ba",
+            "woba",
+            "hard_hit_percent",
+            "whiff_percent",
+            "k_percent",
+            "run_value",
+        ]
+        stat_cols = [c for c in stat_cols if c in ars_df.columns]
+
+        df = ars_df.pivot_table(
+            index="player_id",
+            columns="pitch_type",
+            values=stat_cols,
+        )
+
+        df.columns = [f"{pitch_type}_{stat}" for stat, pitch_type in df.columns]
+        df = df.reset_index()
         _cache.set(cache_key, df.to_dict(orient="records"))
         return df
 

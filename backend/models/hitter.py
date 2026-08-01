@@ -58,6 +58,19 @@ class HitterPercentiles(BaseModel):
     batSpeed: int
 
 
+class HitterwOBAByPitch(BaseModel):
+    FBwOBA: float
+    SLwOBA: float
+    CBwOBA: float
+    CHwOBA: float
+    SIwOBA: float
+    FCwOBA: float
+    STwOBA: float
+    SLVwOBA: float
+    KNwOBA: float
+    FSwOBA: float
+
+
 class Hitter(BaseModel):
     id: int
     player_id: int
@@ -72,3 +85,4 @@ class Hitter(BaseModel):
     statcastAdv: HitterStatcastAdvanced
     # value: HitterValue
     percentiles: HitterPercentiles
+    wOBAByPitch: HitterwOBAByPitch

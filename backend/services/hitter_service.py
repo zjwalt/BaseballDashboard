@@ -7,6 +7,7 @@ from models.hitter import (
     HitterAdvancedStats,
     HitterStatcastAdvanced,
     HitterPercentiles,
+    HitterwOBAByPitch,
 )
 import pandas as pd
 import psycopg2
@@ -57,6 +58,7 @@ class HitterService:
 
         savant_batting = self.savant.get_batting_stats_by_season(SEASON)
         percentile_df = self.savant.get_percentile_rankings(SEASON)
+        arsenal_df = self.savant.get_batter_vs_pitch(SEASON)
         bref_batting = self.bref.get_batting_stats(SEASON)
 
         """
@@ -106,6 +108,7 @@ class HitterService:
                     savant_batting_df=savant_batting,
                     percentile_df=percentile_df,
                     bref_df=bref_batting,
+                    ars_df=arsenal_df,
                     lg_R_PA=lg_R_PA,
                     lg_wRC_PA=lg_wRC_PA,
                     park_factor=float(park_factors.get(player["playerteam"], 1.0)),
@@ -129,6 +132,7 @@ class HitterService:
         savant_batting_df: pd.DataFrame,
         percentile_df: pd.DataFrame,
         bref_df: pd.DataFrame,
+        ars_df: pd.DataFrame,
         lg_R_PA: float,
         lg_wRC_PA: float,
         park_factor: float,
@@ -145,6 +149,9 @@ class HitterService:
         bref_rows = bref_df[bref_df["mlbID"] == mlbam_id]
         bref = bref_rows.iloc[0] if not bref_rows.empty else None
 
+        ars_rows = ars_df[ars_df["player_id"] == mlbam_id]
+        ars = ars_rows.iloc[0] if not ars_rows.empty else None
+
         ## Error Handling
         if sv is None:
             raise ValueError(
@@ -157,6 +164,10 @@ class HitterService:
         if bref is None:
             raise ValueError(
                 f"[HitterService] No Baseball Reference Data found for {player['playername']} ({mlbam_id})"
+            )
+        if ars is None:
+            raise ValueError(
+                f"[HitterService] No Arsenal Data found for {player['playername']} ({mlbam_id})"
             )
 
         wRC_plus = round(
@@ -227,6 +238,18 @@ class HitterService:
                 exitVelo=self._pi(pct, "exit_velocity"),
                 hardHitPct=self._pi(pct, "hard_hit_percent"),
                 batSpeed=self._pi(pct, "bat_speed"),
+            ),
+            wOBAByPitch=HitterwOBAByPitch(
+                FBwOBA=self._sf(ars, "FF_woba"),
+                SLwOBA=self._sf(ars, "SL_woba"),
+                CBwOBA=self._sf(ars, "CU_woba"),
+                CHwOBA=self._sf(ars, "CH_woba"),
+                SIwOBA=self._sf(ars, "SI_woba"),
+                FCwOBA=self._sf(ars, "FC_woba"),
+                STwOBA=self._sf(ars, "ST_woba"),
+                SLVwOBA=self._sf(ars, "ST_woba"),
+                KNwOBA=self._sf(ars, "KN_woba"),
+                FSwOBA=self._sf(ars, "FS_woba"),
             ),
         )
 

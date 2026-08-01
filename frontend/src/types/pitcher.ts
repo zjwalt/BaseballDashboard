@@ -67,7 +67,7 @@ export interface PitchUsage {
   SI: number | null;
   FC: number | null;
   ST: number | null;
-  SV: number | null;
+  SLV: number | null;
   KN: number | null;
   FS: number | null;
 }

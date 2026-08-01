@@ -49,6 +49,19 @@ export interface HitterPercentiles {
   batSpeed: number;
 }
 
+export interface HitterwOBAByPitch {
+  FBwOBA: number;
+  SLwOBA: number;
+  CBwOBA: number;
+  CHwOBA: number;
+  SIwOBA: number;
+  FCwOBA: number;
+  STwOBA: number;
+  SLVwOBA: number;
+  KNwOBA: number;
+  FSwOBA: number;
+}
+
 export interface Hitter {
   id: number;
   player_id: number;
@@ -62,4 +75,5 @@ export interface Hitter {
   advanced: HitterAdvancedStats;
   statcastAdv: HitterStatcastAdvanced;
   percentiles: HitterPercentiles;
+  wOBAByPitch: HitterwOBAByPitch;
 }
